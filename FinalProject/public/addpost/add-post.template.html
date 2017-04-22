@@ -1,0 +1,28 @@
+<div ng-show="uploading" class="progress">
+  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+    <span class="sr-only"></span>
+  </div>
+</div>
+
+
+<form ng-submit="$ctrl.Submit();">
+	<label class="btn btn-success">Browse
+	<input type="file" file-model="file.upload" name="myfile" ng-disabled="uploading" style="display: none;" 
+	onchange="angular.element(this).scope().photoChanged(this.files)">
+	</label>
+	<br>
+	<br>
+	<button class="btn btn-primary" type="submit" ng-disabled="uploading">Upload</button>
+
+</form>
+
+<img class="mythumbnail" ng-src="{{ thumbnail.dataUrl || default }}">
+
+
+
+<div ng-show="message">
+<div ng-class = "alert">
+	{{$ctrl.message}}
+</div>
+</div>
+

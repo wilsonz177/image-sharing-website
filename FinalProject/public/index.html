@@ -1,24 +1,58 @@
 <!DOCTYPE>
 <html ng-app="instaBam">
     <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" ="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script> <!AngularJS script put at bottom to make the app load faster>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script> <!loads ngRoute module>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.js"></script>
         <script src="app.module.js"></script>
         <script src="app.config.js"></script>
         <script src="login/log-in.module.js"></script>
         <script src="login/log-in.component.js"></script>
         <script src="newsfeed/news-feed.module.js"></script>
         <script src="newsfeed/news-feed.component.js"></script>
-        <script src="details/detailed-view.module.js"></script>
-        <script src="details/detailed-view.component.js"></script>
-        <title>InstaBam</title>
+        <script src="addpost/add-post.module.js"></script>
+        <script src="addpost/add-post.component.js"></script>
+        <script src="directives/fileModel.js"></script>
+        <script src="services/uploadFileService.js"></script>
+    <!--     <script src="details/detailed-view.module.js"></script>
+        <script src="details/detailed-view.component.js"></script> -->
+        <title>Finstagram</title>
     </head>
     
+   <h3><a href="#!/login">BACK TO LOGIN</a></h3>
+   <h3><a href="#!/addpost">go to add post</a></h3>
     <body>
         <div ng-view></div>
+
+
+        <!-- <script type="text/javascript" src="https://static.filestackapi.com/v3/filestack.js"></script>
+<script>
+    var client = filestack.init('AroZn5pIIQHWyRmu9YijRz');
+    function showPicker() {
+        client.pick({
+            accept: 'image/*',
+            storeTo: { path: '/myfiles/1234.png' }
+        }).then(function(result) {
+            console.log(JSON.stringify(result.filesUploaded))
+        });
+    }
+</script>
+<input type="button" value="Upload" onclick="showPicker()" /> -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </body>
 </html>
