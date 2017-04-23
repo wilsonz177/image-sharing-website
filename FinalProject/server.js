@@ -1,16 +1,18 @@
 var express = require('express'); //lets us use the Express module in our server.js file
 var app = express();
 var multer = require('multer');
-var morgan = require('morgan'); // Import Morgan Package
-var mongoose = require('mongoose'); // HTTP request logger middleware for Node.js
+// var morgan = require('morgan'); // Import Morgan Package
+// var mongoose = require('mongoose'); // HTTP request logger middleware for Node.js
 var path = require('path'); // Import path module
+
+
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './images/');
   },
   filename: function (req, file, cb) {
-    if(! file.originalname.match(/\.(png|jpg|jpeg)$/) ) {
+    if(! file.originalname.match(/\.(png|jpeg|jpg|JPG|PNG|JPEG)$/) ) {
         var err = new Error();
         err.code = 'filetype';
         return cb(err);
@@ -26,26 +28,27 @@ var upload = multer({
 }).single('myfile');
 
 var mongojs = require('mongojs');//lets us use the MongoJS module in our server.js file
-var db = mongojs('users', ['users']);//tells us what database we will be using
+var db = mongojs('users', ['users']);//tells us what ddatabase we will be using
 
 var bodyParser = require('body-parser');
 
-app.use(morgan('dev')); // Morgan Middleware
+// app.use(morgan('dev')); // Morgan Middleware
 app.use(express.static(__dirname + "/public")); //static because we're telling the server to look for static files (html, css, js, image files)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); //now the server can parse the data it's being sent from the controller
 
-mongoose.connect('mongodb://127.0.0.1:27017/multerTest', function(err) {
-    if (err) {
-        console.log('Not connected to the database: ' + err); // Log to console if unable to connect to database
-    } else {
-        console.log('Successfully connected to MongoDB'); // Log to console if able to connect to database
-    }
-});
+// mongoose.connect('mongodb://127.0.0.1:27017/multerTest', function(err) {
+//     if (err) {
+//         console.log('Not connected to the database: ' + err); // Log to console if unable to connect to database
+//     } else {
+//         console.log('Successfully connected to MongoDB'); // Log to console if able to connect to database
+//     }
+// });
 
 
 
 app.post('/upload', function (req, res) {
+    // console.log('my caption: ', req.body);
   upload(req, res, function (err) {
     if (err) {
       if(err.code === 'LIMIT_FILE_SIZE'){
@@ -67,6 +70,12 @@ app.post('/upload', function (req, res) {
 
     // Everything went fine
   });
+});
+
+app.post('/uploadCaption', function (req, res) {
+    console.log("received upload caption post");
+    console.log("my body: ", req.body.caption);
+    res.json({message: "what the fuck is up", sucess: true});
 });
 
 

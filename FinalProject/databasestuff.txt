@@ -1,0 +1,46 @@
+database called users
+
+{
+	mirhad09{
+		info:{
+			first name:
+			last name:
+			username:
+			password:
+			email:
+			bio:
+			propic:
+			private:
+			followers: { me, him ,what}
+			following: {him her that guy}
+		}
+		pics: {
+			{
+				urlpath: skldfjsdfds
+				time stamp: 7:00pm
+				likes: count or users?
+				caption: "sdlkfjlsdfs"
+				comments: {
+					comment1{
+						username:
+						content:
+					},comment2{
+						username:
+						content:
+					}
+				}
+			},
+			{
+				url path: lksdjfsd
+				timestamp: skdlfjsdf
+			}
+		}
+		newsfeed:  {
+			pic1{
+				username:
+				urlpathpic:
+			}
+		}
+
+	}
+}

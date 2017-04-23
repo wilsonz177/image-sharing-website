@@ -11,26 +11,23 @@ angular.
       $scope.alert = '';
       $scope.file ={};
       self.message = "hello";
-    
+      self.default = "http://www.bofep.org/wpbofep/wp-content/uploads/2013/05/Insert-Photo-Here.jpg";
 
-      // var doUpload = function(){
-      //   $http.post('/upload/', fd, {
-      //       transformRequest: angular.identity,
-      //       headers: { 'Content-Type': undefined }
-      //   });
-      // };
+      self.myCaption = '';
 
       self.Submit = function(){
         //shows the progress bar and stuff
         $scope.uploading = true;
         $scope.message = true;
+        console.log("caption: ",self.myCaption);
         var fd = new FormData();
         if($scope.file === undefined){
           console.log('hey im undefined');
           self.message = "Please attach a file";
         }else{
           fd.append('myfile', $scope.file.upload);
-
+          // fd.append('mycaption', self.myCaption);
+          console.log("fd: ", fd);
           $http.post('/upload/', fd, {
               transformRequest: angular.identity,
               headers: { 'Content-Type': undefined }
@@ -42,6 +39,7 @@ angular.
               console.log('success');
               self.message = data.data.message;
               $scope.file = {};
+               postCaption();
             }else{
               $scope.uploading = false;
               $scope.alert = 'alert alert-danger';
@@ -56,24 +54,41 @@ angular.
 
 
       $scope.photoChanged = function(files) {
-        if (files.length > 0 && files[0].name.match(/\.(png|jpeg|jpg)$/)) {
+        if (files.length > 0 && files[0].name.match(/\.(png|jpeg|jpg|JPG|PNG|JPEG)$/)) {
             $scope.uploading = true;
             var file = files[0];
             var fileReader = new FileReader();
             fileReader.readAsDataURL(file);
             fileReader.onload = function(e) {
                 $timeout(function() {
-                    $scope.thumbnail = {};
-                    $scope.thumbnail.dataUrl = e.target.result;
+                    self.thumbnail = {};
+                    self.thumbnail.dataUrl = e.target.result;
                     $scope.uploading = false;
                     $scope.message = false;
                 });
             };
         } else {
-            $scope.thumbnail = {};
+            self.thumbnail = {};
+            console.log('not the file we wanted');
             $scope.message = false;
         }
     };
+
+
+
+      var postCaption = function(){
+        console.log("attempt to post caption");
+        var temp = new Object();
+        temp.caption = self.myCaption;
+        var jsonString = JSON.stringify(temp);
+        console.log('myjson string: ', jsonString);
+        $http.post('/uploadCaption', jsonString, {
+              transformRequest: angular.identity,
+              headers: { 'Content-Type': 'application/json' }
+          }).then(function(response){
+          console.log("post response: ", response);
+        });
+      }
 /////////////////////////////////////////////////////////////////////////////////
 
       //self.login = function() {
