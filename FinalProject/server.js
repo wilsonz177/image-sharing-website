@@ -17,6 +17,7 @@ var multer = require('multer');
 var path = require('path'); // Import path module
 
 var username = "kyle";
+var userId;
 
 ////////////////////////////get and post requests/////////////////////////////////////
 
@@ -54,6 +55,7 @@ var upload = multer({
 app.post('/upload', function (req, res) {
     
   upload(req, res, function (err) {
+    var myfilepath = req.file.path;
     if (err) {
       if(err.code === 'LIMIT_FILE_SIZE'){
         res.json({success: false, message: "File size is too large, max size is 10 MB"});
@@ -69,6 +71,25 @@ app.post('/upload', function (req, res) {
             res.json({success: false, message: "No file was selected"});
         }else{
             res.json({success: true, message: "file was uploaded"});
+            var query = {};
+            query['username'] = username;
+            var pushPic = {};
+            pushPic[filepath] = myfilepath;
+            var d = new Date();
+            console.log('my timestamp: ', d.getTime());
+            pushPic[timestamp] = d.getTime();
+            pushPic[likes] = 0;
+            pushPic[caption] = '';
+            pushPic[comments] = {};
+            db.users.update(
+                   query,
+                   {$push : {
+                             pics : {
+                                pushPic
+                               }
+                          }
+                    }
+            );
         }
     }
 
@@ -81,7 +102,7 @@ app.post('/upload', function (req, res) {
 app.post('/uploadCaption', function (req, res) {
     console.log("received upload caption post");
     console.log("my body: ", req.body.caption);
-    res.json({message: "what the fuck is up", sucess: true});
+    res.json({message: "what the fuck is up", success: true});
 });
 
 
@@ -89,7 +110,7 @@ app.post('/uploadCaption', function (req, res) {
 
 app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
 
-    var user = req.body.username;
+    username = req.body.username;
     var pass = req.body.password;
     db.users.find(function (err, docs) { //docs is the actual data from the server
 
@@ -107,22 +128,29 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
    });
 });
 
+
+
+var userid;
 /////////////////////////////////////////////////////////////////////////////////
 
 app.post('/adduser', function (req, res) { //listens for post request from controller
 
     var newEntry = {};
-    var username = req.body.username;
+    username = req.body.username;
     newEntry[username] = {"info": req.body, "pics":{}, "newfeed":{}};
     newEntry[username].info.followers = [];
     newEntry[username].info.following = [];
     
     db.users.insert(newEntry, function(err, doc) { //inserts into database
+
         res.json(doc); //responds with NEW data back to controller
     });
     
+    var wilsonPath = "/Users/wilsonzhong/cse330/spring2017-cp-441746-435490/FinalProject/images/";
+    var mirhadPath = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/";
+
     //create folder to store images
-    var path = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/" + username;
+    var path = wilsonPath + username;
     mkdirp(path, function (err) {
         if (err){
             console.error(err);
