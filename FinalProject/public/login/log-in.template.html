@@ -11,9 +11,9 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input class="form-control" name="u" ng-model="user.username"></td>
-                        <td><input class="form-control" name="p" ng-model="user.password"></td>
-                        <td><button class="btn btn-primary" name="yup" ng-click="login()">Login</button></td>
+                        <td><input class="form-control" name="u" ng-model="$ctrl.user.username"></td>
+                        <td><input class="form-control" name="p" ng-model="$ctrl.user.password"></td>
+                        <td><button class="btn btn-primary" name="yup" ng-click="$ctrl.login()">Login</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -22,14 +22,14 @@
                 Or create a new account:
                 <tbody>
                     <tr>
-                        <td>First Name: <input class="form-control" name="firstname" ng-model="newuser.firstname"></td>
-                        <td>Last Name: <input class="form-control" name="lastname" ng-model="newuser.lastname"></td>
-                        <td>Username: <input class="form-control" name="uname" ng-model="newuser.username"></td>
-                        <td>Password: <input class="form-control" name="pass" ng-model="newuser.password"></td>
-                        <td>Email: <input class="form-control"  name="email"ng-model="newuser.email"></td>
-                        <td>Short Bio: <input class="form-control" name="bio" ng-model="newuser.bio"></td>
-                        <td>Private? <input type="radio" name="private" value="private" class="form-control" ng-model="newuser.private"></td> 
-                        <td><button class="btn btn-primary" ng-click="adduser()">Create Account</button></td>
+                        <td>First Name: <input class="form-control" name="firstname" ng-model="$ctrl.newuser.firstname"></td>
+                        <td>Last Name: <input class="form-control" name="lastname" ng-model="$ctrl.newuser.lastname"></td>
+                        <td>Username: <input class="form-control" name="uname" ng-model="$ctrl.newuser.username"></td>
+                        <td>Password: <input class="form-control" name="pass" ng-model="$ctrl.newuser.password"></td>
+                        <td>Email: <input class="form-control"  name="email"ng-model="$ctrl.newuser.email"></td>
+                        <td>Short Bio: <input class="form-control" name="bio" ng-model="$ctrl.newuser.bio"></td>
+                        <td>Private? <input type="radio" name="private" value="private" class="form-control" ng-model="$ctrl.newuser.private"></td> 
+                        <td><button class="btn btn-primary" ng-click="$ctrl.adduser()">Create Account</button></td>
                     </tr>
                 </tbody>
             </table>

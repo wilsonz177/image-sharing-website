@@ -90,12 +90,15 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
     var user = req.body.username;
     var pass = req.body.password;
     db.users.find(function (err, docs) { //docs is the actual data from the server
+      
+    
 
         for (var index in docs) {
             for (var key in docs[index]){
                 if (key == user){
                     if (pass == docs[index][key].info.password){
-                        console.log("password match"); //redirect to news feed page
+                        console.log("password match");
+                        res(req.body.username);
                     }
                 } else {
                     console.log("username/password incorrect"); //create error message
@@ -109,23 +112,27 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
 
 app.post('/adduser', function (req, res) { //listens for post request from controller
 
-    var newEntry = {};
-    var username = req.body.username;
-    newEntry[username] = {"info": req.body, "pics":{}, "newfeed":{}};
-    newEntry[username].info.followers = [];
-    newEntry[username].info.following = [];
+    var newEntry = req.body;
+    newEntry.pics = {};
+    newEntry.newfeed = {};
+
+    //var newEntry = {};
+    //var username = req.body.username;
+    //newEntry[username] = {"info": req.body, "pics":{}, "newsfeed":{}};
+    //newEntry[username].info.followers = [];
+    //newEntry[username].info.following = [];
     
     db.users.insert(newEntry, function(err, doc) { //inserts into database
         res.json(doc); //responds with NEW data back to controller
     });
     
     //create folder to store images
-    var path = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/" + username;
+    var path = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/" + req.body.username;
     mkdirp(path, function (err) {
         if (err){
             console.error(err);
         } else {
-            console.log('Made a folder with username: ', username);
+            console.log('Made a folder with username: ', req.body.username);
         }
     });
 });
@@ -141,3 +148,24 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 // });
 
 /////////////////////////////////////////////////////////////////////////////////
+
+app.post('/loadnewsfeed', function (req, res) { //listens for post request from controller
+    console.log(req.body);
+});
+
+/////////////////////////////////////////////////////////////////////////////////
+
+function getInfo(user) {
+      db.users.find(function (err, docs) { //docs is the actual data from the server
+
+        for (var index in docs) {
+            for (var key in docs[index]){
+                if (key == user){
+                    return docs[index].key; //returns all info for user
+                } else {
+                    console.log("no info for this user"); //create error message
+                }
+            }
+        }
+   });
+}

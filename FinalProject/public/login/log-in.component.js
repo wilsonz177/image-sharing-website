@@ -5,38 +5,38 @@ angular.
   module('logIn').
   component('logIn', {
     templateUrl: 'login/log-in.template.html',
-    controller: ['$http', '$scope', function LoginController($http, $scope) {
+    controller: ['$http', '$scope', function LoginController($http, $scope, $location, $rootScope) {
       var self = this;
 
 /////////////////////////////////////////////////////////////////////////////////
 
-    $scope.login = function() {
+    self.login = function() {
         var o = new Object();
-        o.username = $scope.user.username;
-        o.password = $scope.user.password;
+        o.username = self.user.username;
+        o.password = self.user.password;
         var jsonString = JSON.stringify(o);
-        console.log("in the login function");
-        console.log(o);
-        console.log('jsonstring: ', jsonString);
+        
         $http.post('/checkuser', jsonString, {
             //transformRequest: angular.identity,
             headers: {'Content-Type': 'application/json'}
       }).then(function(response) {
-            //route to the newsfeed view
+          $rootScope.user = response;
+          var path = '/newsfeed';
+            $location.path(path);
         });
       };
     
 /////////////////////////////////////////////////////////////////////////////////
     
-    $scope.adduser = function() {
+    self.adduser = function() {
         console.log("in the adduser function");
         $http({
         method: 'POST',
         url:'/adduser',
-        data: $scope.newuser
+        data: self.newuser
       })
       .then(function(response) {
-            //route to the newsfeed view
+            $location.path('/newfeed');
         });
       };
     
