@@ -5,20 +5,21 @@ angular.
   module('newsFeed').
   component('newsFeed', {
     templateUrl: 'newsfeed/news-feed.template.html',
-    controller: ['$http', function NewsFeedController($http) {
+    controller: ['$http', function NewsFeedController($http, $rootScope) {
       var self = this;
-
+      loadnewsfeed();
 /////////////////////////////////////////////////////////////////////////////////
-
-      //self.login = function() {
-      //  $http({
-      //  method: 'GET',
-      //  url:'/checkuser' //contactlist is the route we'll create to get our data from
-      //})
-      //.then(function(response) {
-      //  self.contactList = response.data;
-      //  });
-      //};
+      
+      var loadnewsfeed = function() {
+        $http({
+        method: 'POST',
+        url:'/loadnewsfeed',
+        data: $rootScope.user
+      })
+      .then(function(response) {
+        self.contactList = response.data;
+        });
+      };
     
 /////////////////////////////////////////////////////////////////////////////////
     

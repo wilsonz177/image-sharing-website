@@ -16,14 +16,10 @@ var multer = require('multer');
 // var mongoose = require('mongoose'); // HTTP request logger middleware for Node.js
 var path = require('path'); // Import path module
 
-<<<<<<< HEAD
 var username = "kyle";
-=======
-app.listen(3000); //listening on port 3000
-console.log("Server running on port 3000");
+var userId;
 
 ////////////////////////////get and post requests/////////////////////////////////////
->>>>>>> d71358372708bebd721424f96d7e8ba47945c7cc
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -46,23 +42,6 @@ var upload = multer({
     limits : {fileSize : 100000000}
 }).single('myfile');
 
-<<<<<<< HEAD
-
-
-
-var mongojs = require('mongojs');//lets us use the MongoJS module in our server.js file
-var db = mongojs('users', ['users']);//tells us what ddatabase we will be using
-
-var bodyParser = require('body-parser');
-
-// app.use(morgan('dev')); // Morgan Middleware
-app.use(express.static(__dirname + "/public")); //static because we're telling the server to look for static files (html, css, js, image files)
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json()); //now the server can parse the data it's being sent from the controller
-
-
-=======
->>>>>>> d71358372708bebd721424f96d7e8ba47945c7cc
 // mongoose.connect('mongodb://127.0.0.1:27017/multerTest', function(err) {
 //     if (err) {
 //         console.log('Not connected to the database: ' + err); // Log to console if unable to connect to database
@@ -76,6 +55,7 @@ app.use(bodyParser.json()); //now the server can parse the data it's being sent 
 app.post('/upload', function (req, res) {
     
   upload(req, res, function (err) {
+    var myfilepath = req.file.path;
     if (err) {
       if(err.code === 'LIMIT_FILE_SIZE'){
         res.json({success: false, message: "File size is too large, max size is 10 MB"});
@@ -91,6 +71,25 @@ app.post('/upload', function (req, res) {
             res.json({success: false, message: "No file was selected"});
         }else{
             res.json({success: true, message: "file was uploaded"});
+            var query = {};
+            query['username'] = username;
+            var pushPic = {};
+            pushPic[filepath] = myfilepath;
+            var d = new Date();
+            console.log('my timestamp: ', d.getTime());
+            pushPic[timestamp] = d.getTime();
+            pushPic[likes] = 0;
+            pushPic[caption] = '';
+            pushPic[comments] = {};
+            db.users.update(
+                   query,
+                   {$push : {
+                             pics : {
+                                pushPic
+                               }
+                          }
+                    }
+            );
         }
     }
 
@@ -103,7 +102,7 @@ app.post('/upload', function (req, res) {
 app.post('/uploadCaption', function (req, res) {
     console.log("received upload caption post");
     console.log("my body: ", req.body.caption);
-    res.json({message: "what the fuck is up", sucess: true});
+    res.json({message: "what the fuck is up", success: true});
 });
 
 
@@ -111,15 +110,18 @@ app.post('/uploadCaption', function (req, res) {
 
 app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
 
-    var user = req.body.username;
+    username = req.body.username;
     var pass = req.body.password;
     db.users.find(function (err, docs) { //docs is the actual data from the server
+      
+    
 
         for (var index in docs) {
             for (var key in docs[index]){
                 if (key == user){
                     if (pass == docs[index][key].info.password){
-                        console.log("password match"); //redirect to news feed page
+                        console.log("password match");
+                        res(req.body.username);
                     }
                 } else {
                     console.log("username/password incorrect"); //create error message
@@ -129,27 +131,50 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
    });
 });
 
+
+
+var userid;
 /////////////////////////////////////////////////////////////////////////////////
 
 app.post('/adduser', function (req, res) { //listens for post request from controller
 
+<<<<<<< HEAD
     var newEntry = {};
-    var username = req.body.username;
+    username = req.body.username;
     newEntry[username] = {"info": req.body, "pics":{}, "newfeed":{}};
     newEntry[username].info.followers = [];
     newEntry[username].info.following = [];
+=======
+    var newEntry = req.body;
+    newEntry.pics = {};
+    newEntry.newfeed = {};
+
+    //var newEntry = {};
+    //var username = req.body.username;
+    //newEntry[username] = {"info": req.body, "pics":{}, "newsfeed":{}};
+    //newEntry[username].info.followers = [];
+    //newEntry[username].info.following = [];
+>>>>>>> 0d1dfa66978269968425cce012dda64a59c8ccb7
     
     db.users.insert(newEntry, function(err, doc) { //inserts into database
+
         res.json(doc); //responds with NEW data back to controller
     });
     
+    var wilsonPath = "/Users/wilsonzhong/cse330/spring2017-cp-441746-435490/FinalProject/images/";
+    var mirhadPath = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/";
+
     //create folder to store images
-    var path = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/" + username;
+<<<<<<< HEAD
+    var path = wilsonPath + username;
+=======
+    var path = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/" + req.body.username;
+>>>>>>> 0d1dfa66978269968425cce012dda64a59c8ccb7
     mkdirp(path, function (err) {
         if (err){
             console.error(err);
         } else {
-            console.log('Made a folder with username: ', username);
+            console.log('Made a folder with username: ', req.body.username);
         }
     });
 });
@@ -165,3 +190,29 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 // });
 
 /////////////////////////////////////////////////////////////////////////////////
+
+<<<<<<< HEAD
+app.listen(3000); //listening on port 3000
+console.log("Server running on port 3000");
+=======
+app.post('/loadnewsfeed', function (req, res) { //listens for post request from controller
+    console.log(req.body);
+});
+
+/////////////////////////////////////////////////////////////////////////////////
+
+function getInfo(user) {
+      db.users.find(function (err, docs) { //docs is the actual data from the server
+
+        for (var index in docs) {
+            for (var key in docs[index]){
+                if (key == user){
+                    return docs[index].key; //returns all info for user
+                } else {
+                    console.log("no info for this user"); //create error message
+                }
+            }
+        }
+   });
+}
+>>>>>>> 0d1dfa66978269968425cce012dda64a59c8ccb7

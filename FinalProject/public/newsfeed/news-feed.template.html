@@ -1,0 +1,35 @@
+<body>
+        <div class="container">
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Newsfeed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="post in feed">
+                        <td><img src="" alt="No Image!" height="100" width="100"></td>
+                        <td><td ng-repeat="comment in post.comments">{{comment.user}}: {{comment.message}}</td></td>
+                        <td><button class="btn btn-primary" name="addcomment" ng-click="addcomment()">Add Comment</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <table class="table">
+                Or create a new account:
+                <tbody>
+                    <tr>
+                        <td>First Name: <input class="form-control" name="firstname" ng-model="newuser.firstname"></td>
+                        <td>Last Name: <input class="form-control" name="lastname" ng-model="newuser.lastname"></td>
+                        <td>Username: <input class="form-control" name="uname" ng-model="newuser.username"></td>
+                        <td>Password: <input class="form-control" name="pass" ng-model="newuser.password"></td>
+                        <td>Email: <input class="form-control"  name="email"ng-model="newuser.email"></td>
+                        <td>Short Bio: <input class="form-control" name="bio" ng-model="newuser.bio"></td>
+                        <td>Private? <input type="radio" name="private" value="private" class="form-control" ng-model="newuser.private"></td> 
+                        <td><button class="btn btn-primary" ng-click="adduser()">Create Account</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+</body>

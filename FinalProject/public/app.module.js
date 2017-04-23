@@ -5,6 +5,7 @@ angular.module('instaBam', [
   'ngRoute',
   'logIn',
   'addPost',
+  'newsFeed',
   'fileModelDirective', 
   'uploadFileService',
 ]);
