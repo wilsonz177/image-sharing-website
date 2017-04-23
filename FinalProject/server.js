@@ -1,11 +1,24 @@
 var express = require('express'); //lets us use the Express module in our server.js file
 var app = express();
+
+var mongojs = require('mongojs');//lets us use the MongoJS module in our server.js file
+var db = mongojs('users', ['users']);//tells us what database we will be using
+
+var bodyParser = require('body-parser');
+var mkdirp = require('mkdirp');
+
+app.use(express.static(__dirname + "/public")); //static because we're telling the server to look for static files (html, css, js, image files)
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); //now the server can parse the data it's being sent from the controller
+
 var multer = require('multer');
 // var morgan = require('morgan'); // Import Morgan Package
 // var mongoose = require('mongoose'); // HTTP request logger middleware for Node.js
 var path = require('path'); // Import path module
 
 var username = "kyle";
+
+////////////////////////////get and post requests/////////////////////////////////////
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -27,20 +40,6 @@ var upload = multer({
     storage: storage,
     limits : {fileSize : 100000000}
 }).single('myfile');
-
-
-
-
-var mongojs = require('mongojs');//lets us use the MongoJS module in our server.js file
-var db = mongojs('users', ['users']);//tells us what ddatabase we will be using
-
-var bodyParser = require('body-parser');
-
-// app.use(morgan('dev')); // Morgan Middleware
-app.use(express.static(__dirname + "/public")); //static because we're telling the server to look for static files (html, css, js, image files)
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json()); //now the server can parse the data it's being sent from the controller
-
 
 // mongoose.connect('mongodb://127.0.0.1:27017/multerTest', function(err) {
 //     if (err) {
@@ -86,33 +85,52 @@ app.post('/uploadCaption', function (req, res) {
 });
 
 
+/////////////////////////////////////////////////////////////////////////////////
 
+app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
 
+    var user = req.body.username;
+    var pass = req.body.password;
+    db.users.find(function (err, docs) { //docs is the actual data from the server
+
+        for (var index in docs) {
+            for (var key in docs[index]){
+                if (key == user){
+                    if (pass == docs[index][key].info.password){
+                        console.log("password match"); //redirect to news feed page
+                    }
+                } else {
+                    console.log("username/password incorrect"); //create error message
+                }
+            }
+        }
+   });
+});
 
 /////////////////////////////////////////////////////////////////////////////////
 
-// app.get('/checkuser', function (req,res) { //get requests asks mongoDB for data
-//     console.log("I received a GET request");
-//     db.users.find().toArray(function (err, docs) { //docs is the actual data from the server
-//         console.log(docs);
-//         for (var key in docs) {
-            
-//         }
-//         res.json(docs); //responds back to controller
-//    });
-// });
+app.post('/adduser', function (req, res) { //listens for post request from controller
 
-
-
-/////////////////////////////////////////////////////////////////////////////////
-
-// app.post('/contactlist', function (req, res) { //listens for post request from controller
-//     console.log("the following is the new entry");
-//     console.log(req.body);
-//     db.contactList.insert(req.body, function(err, doc) { //inserts into database
-//         res.json(doc); //responds with NEW data back to controller
-//     });
-// });
+    var newEntry = {};
+    var username = req.body.username;
+    newEntry[username] = {"info": req.body, "pics":{}, "newfeed":{}};
+    newEntry[username].info.followers = [];
+    newEntry[username].info.following = [];
+    
+    db.users.insert(newEntry, function(err, doc) { //inserts into database
+        res.json(doc); //responds with NEW data back to controller
+    });
+    
+    //create folder to store images
+    var path = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/" + username;
+    mkdirp(path, function (err) {
+        if (err){
+            console.error(err);
+        } else {
+            console.log('Made a folder with username: ', username);
+        }
+    });
+});
 
 /////////////////////////////////////////////////////////////////////////////////
 
