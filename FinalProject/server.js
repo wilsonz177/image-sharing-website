@@ -17,7 +17,7 @@ var multer = require('multer');
 var path = require('path'); // Import path module
 
 var username = "kyle";
-var userId;
+var myCaption = '';
 
 ////////////////////////////get and post requests/////////////////////////////////////
 
@@ -73,23 +73,26 @@ app.post('/upload', function (req, res) {
             res.json({success: true, message: "file was uploaded"});
             var query = {};
             query['username'] = username;
-            var pushPic = {};
-            pushPic[filepath] = myfilepath;
+            console.log('myusername: ', username);
+            
             var d = new Date();
-            console.log('my timestamp: ', d.getTime());
-            pushPic[timestamp] = d.getTime();
-            pushPic[likes] = 0;
-            pushPic[caption] = '';
-            pushPic[comments] = {};
+            
             db.users.update(
-                   query,
+                   {username: username},
                    {$push : {
                              pics : {
-                                pushPic
+                                filepath: myfilepath,
+                                timestamp : d.getTime(),
+                                likes: 0,
+                                caption : myCaption,
+                                comments: [],
+
                                }
                           }
                     }
             );
+
+
         }
     }
 
@@ -102,6 +105,7 @@ app.post('/upload', function (req, res) {
 app.post('/uploadCaption', function (req, res) {
     console.log("received upload caption post");
     console.log("my body: ", req.body.caption);
+    myCaption = req.body.caption;
     res.json({message: "what the fuck is up", success: true});
 });
 
@@ -112,6 +116,10 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
 
     username = req.body.username;
     var pass = req.body.password;
+    var temp = {};
+    temp['username'] = username;
+    // db.users.find(temp, )
+
     db.users.find(function (err, docs) { //docs is the actual data from the server
       
     
@@ -136,9 +144,16 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
 app.post('/adduser', function (req, res) { //listens for post request from controller
 
     var newEntry = req.body;
-    newEntry.pics = {};
-    newEntry.newfeed = {};
-
+    if(req.body.private === "private"){
+         newEntry.private = true;
+    }else{
+        newEntry.private = false;
+    }
+    newEntry.followers = [];
+    newEntry.following = [];
+    newEntry.pics = [];
+    newEntry.newfeed = [];
+    username = req.body.username;
     //var newEntry = {};
     //var username = req.body.username;
     //newEntry[username] = {"info": req.body, "pics":{}, "newsfeed":{}};
@@ -153,7 +168,7 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
     var mirhadPath = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/";
 
     //create folder to store images
-    var path = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/" + req.body.username;
+    var path = wilsonPath + req.body.username;
     mkdirp(path, function (err) {
         if (err){
             console.error(err);
