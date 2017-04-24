@@ -1,19 +1,18 @@
 database called users
 
 {
-	mirhad09{
-		info:{
-			first name:
-			last name:
-			username:
-			password:
-			email:
-			bio:
-			propic:
-			private:
-			followers: { me, him ,what}
-			following: {him her that guy}
-		}
+	{
+		_id = objectid(dlskflksdfds)
+		first name:
+		last name:
+		username:
+		password:
+		email:
+		bio:
+		propic:
+		private:
+		followers: { me, him ,what}
+		following: {him her that guy}
 		pics: {
 			{
 				urlpath: skldfjsdfds
@@ -41,6 +40,10 @@ database called users
 				urlpathpic:
 			}
 		}
-
 	}
+	
+
+	
 }
+
+

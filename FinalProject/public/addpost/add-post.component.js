@@ -12,22 +12,24 @@ angular.
       $scope.file ={};
       self.message = "hello";
       self.default = "http://www.bofep.org/wpbofep/wp-content/uploads/2013/05/Insert-Photo-Here.jpg";
-
+      $scope.username = "Tom"
       self.myCaption = '';
 
       self.Submit = function(){
         //shows the progress bar and stuff
         $scope.uploading = true;
         $scope.message = true;
-        console.log("caption: ",self.myCaption);
+        // console.log("my file: ", $scope.file);
         var fd = new FormData();
         if($scope.file === undefined){
           console.log('hey im undefined');
           self.message = "Please attach a file";
         }else{
+          $scope.file.upload.username = "tom";
           fd.append('myfile', $scope.file.upload);
+          // fd.append('username', $scope.username);
           // fd.append('mycaption', self.myCaption);
-          console.log("fd: ", fd);
+          console.log("ctrl.thatfile: ", $scope.file.upload);
           $http.post('/upload/', fd, {
               transformRequest: angular.identity,
               headers: { 'Content-Type': undefined }
@@ -80,6 +82,8 @@ angular.
         console.log("attempt to post caption");
         var temp = new Object();
         temp.caption = self.myCaption;
+        // console.log("url Path: ", )
+        // temp.urlPath = 
         var jsonString = JSON.stringify(temp);
         console.log('myjson string: ', jsonString);
         $http.post('/uploadCaption', jsonString, {

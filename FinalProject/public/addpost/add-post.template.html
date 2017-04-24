@@ -17,11 +17,12 @@
     max-height: 400px;">
 
 
-<form ng-submit="$ctrl.Submit();" >
+<form ng-submit="$ctrl.Submit();" enctype="multipart/form-data">
 	
 	<label class="btn btn-success">Browse
 	<input type="file" file-model="file.upload" name="myfile" ng-disabled="uploading" style="display: none;" 
 	onchange="angular.element(this).scope().photoChanged(this.files)">
+	
 	</label>
 	<br><br>
 	<div class="form-group">
