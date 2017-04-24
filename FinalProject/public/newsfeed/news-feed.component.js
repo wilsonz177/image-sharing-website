@@ -32,12 +32,12 @@ angular.
           console.log(self.globalfeed);
           //sort my global feed
           self.globalfeed.sort(function(a, b) {
-              return parseFloat(a.pic.timestamp) - parseFloat(b.pic.timestamp);
+              return parseFloat(b.pic.timestamp) - parseFloat(a.pic.timestamp);
           });
 
           console.log(self.globalfeed)
 
-          
+          console.log('test: ', typeof(self.globalfeed[0].pic.filepath))
 
         });
       };
