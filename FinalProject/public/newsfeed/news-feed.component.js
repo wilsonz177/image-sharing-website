@@ -5,22 +5,22 @@ angular.
   module('newsFeed').
   component('newsFeed', {
     templateUrl: 'newsfeed/news-feed.template.html',
-    controller: ['$http', function NewsFeedController($http, $rootScope) {
+    controller: ['$http','$rootScope', function NewsFeedController($http, $rootScope) {
       var self = this;
-      loadnewsfeed();
 /////////////////////////////////////////////////////////////////////////////////
       
       var loadnewsfeed = function() {
         $http({
         method: 'POST',
         url:'/loadnewsfeed',
-        data: $rootScope.user
+        data: {"user": $rootScope.user}
       })
       .then(function(response) {
         self.contactList = response.data;
         });
       };
-    
+      
+     loadnewsfeed();
 /////////////////////////////////////////////////////////////////////////////////
     
 
