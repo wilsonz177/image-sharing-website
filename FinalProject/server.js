@@ -123,6 +123,9 @@ app.post('/addComment', function(req, res){
 app.get('/getProfile/:username', function(req,res){
     console.log('received get profile: ', req.params.username);
     db.users.find({username: req.params.username}, function(err,docs){
+        if(err){
+            console.log(err);
+        }
         res.json(docs[0]);
     });
     
@@ -132,30 +135,36 @@ app.get('/getProfile/:username', function(req,res){
 /////////////////////////////////////////////////////////////////////////////////
 
 app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
-
+    console.log('check user');
     username = req.body.username;
     var pass = req.body.password;
-    var temp = {};
-    temp['username'] = username;
-    // db.users.find(temp, )
+    
+    db.users.find({username: req.body.username}, function(err, docs){
+        if(docs[0].password == pass){
+            console.log('password matches');
+            res.json({"username" : req.body.username, "_id" : req.body._id});
+        }else{
+            console.log('incorrect password/username');
+        }
+    });
 
-    db.users.find(function (err, docs) { //docs is the actual data from the server
+   //  db.users.find(function (err, docs) { //docs is the actual data from the server
       
     
 
-        for (var index in docs) {
-            for (var key in docs[index]){
-                if (key == user){
-                    if (pass == docs[index][key].info.password){
-                        console.log("password match");
-                        res.json({"username": req.body.username, "_id": req.body._id});
-                    }
-                } else {
-                    console.log("username/password incorrect"); //create error message
-                }
-            }
-        }
-   });
+   //      for (var index in docs) {
+   //          for (var key in docs[index]){
+   //              if (key == user){
+   //                  if (pass == docs[index][key].info.password){
+   //                      console.log("password match");
+   //                      res.json({"username": req.body.username, "_id": req.body._id});
+   //                  }
+   //              } else {
+   //                  console.log("username/password incorrect"); //create error message
+   //              }
+   //          }
+   //      }
+   // });
 });
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -215,6 +224,29 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 // });
 
 /////////////////////////////////////////////////////////////////////////////////
+
+app.get('/globalnewsfeed', function(req, res){
+    console.log('received get request for global news feed');
+    db.users.find({private: false}, function(err,docs){
+        if(err){
+            console.log(err);
+        }
+        // console.log('docs length: ', docs.length);
+        var globalfeed = [];
+        for(var i = 0; i<docs.length; i++){
+            console.log(docs[i].username, ": and their pics: ", docs[i].pics);
+            var temp = {};
+            temp.username = docs[i].username;
+            temp.pics = docs[i].pics;
+            globalfeed.push(temp);
+        }
+        console.log(globalfeed);
+        res.json(globalfeed);
+    })
+
+});
+
+
 
 function getInfo(user) {
       //this is where u should query the database for teh info you need

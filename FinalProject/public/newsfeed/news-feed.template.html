@@ -4,14 +4,20 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Newsfeed</th>
+                        <th>images</th>
+                        <th>username</th>
+                        <th>caption</th>
+                        <th>idk</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="post in feed">
-                        <td><img src="" alt="No Image!" height="100" width="100"></td>
-                        <td><td ng-repeat="comment in post.comments">{{comment.user}}: {{comment.message}}</td></td>
-                        <td><button class="btn btn-primary" name="addcomment" ng-click="addcomment()">Add Comment</button></td>
+                    <tr ng-repeat="post in $ctrl.globalfeed">
+                        <td><img src="{{post.pic.filepath}}" alt="No Image!" height="100" width="100"></td>
+                        <td>{{post.name}}</td>
+                        <td>{{post.pic.caption}}</td>
+                        <td>{{post.pic.filepath}}</td>
+                        <!-- <td><td ng-repeat="comment in post.comments">{{comment.user}}: {{comment.message}}</td></td>
+                        <td><button class="btn btn-primary" name="addcomment" ng-click="addcomment()">Add Comment</button></td> -->
                     </tr>
                 </tbody>
             </table>

@@ -12,9 +12,9 @@ angular.
         when('/addpost', {
           template: '<add-post></add-post>'
         }).
-        //  when('/newsfeed', {
-        //    template: '<news-feed></news-feed>'
-        // }).
+         when('/newsfeed', {
+           template: '<news-feed></news-feed>'
+        }).
         //  when('/details/:id', {
         //    template: '<detailed-view></detailed-view>'
         // }).
