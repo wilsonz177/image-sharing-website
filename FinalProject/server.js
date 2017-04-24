@@ -100,6 +100,7 @@ app.post('/upload', function (req, res) {
   });
 });
 
+/////////////////////////////////////////////////////////////////////////////////
 
 
 app.post('/uploadCaption', function (req, res) {
@@ -107,6 +108,24 @@ app.post('/uploadCaption', function (req, res) {
     console.log("my body: ", req.body.caption);
     myCaption = req.body.caption;
     res.json({message: "what the fuck is up", success: true});
+});
+
+/////////////////////////////////////////////////////////////////////////////////
+
+app.post('/addComment', function(req, res){
+    console.log('received add comment post: ', req.body);
+    res.json({message: "add comment shit", success: true});
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////
+
+app.get('/getProfile/:username', function(req,res){
+    console.log('received get profile: ', req.params.username);
+    db.users.find({username: req.params.username}, function(err,docs){
+        res.json(docs[0]);
+    });
+    
 });
 
 
@@ -190,10 +209,10 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 
 /////////////////////////////////////////////////////////////////////////////////
 
-app.post('/loadnewsfeed', uep, function (req, res) { //listens for post request from controller
-    var info = getInfo(req.body.user);
-    res.json(info);
-});
+// app.post('/loadnewsfeed', uep, function (req, res) { //listens for post request from controller
+//     var info = getInfo(req.body.user);
+//     res.json(info);
+// });
 
 /////////////////////////////////////////////////////////////////////////////////
 

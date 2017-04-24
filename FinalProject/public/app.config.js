@@ -12,12 +12,18 @@ angular.
         when('/addpost', {
           template: '<add-post></add-post>'
         }).
-         when('/newsfeed', {
-           template: '<news-feed></news-feed>'
-        }).
-         when('/details/:id', {
-           template: '<detailed-view></detailed-view>'
-        }).
+        //  when('/newsfeed', {
+        //    template: '<news-feed></news-feed>'
+        // }).
+        //  when('/details/:id', {
+        //    template: '<detailed-view></detailed-view>'
+        // }).
+         when('/addcomment', {
+            template: '<add-comment></add-comment>'
+         }).
+         when('/viewuser/:username', {
+            template: '<view-profile></view-profile>'
+         }).
         otherwise('/login');
     }
   ]);
