@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var mkdirp = require('mkdirp');
 
 app.use(express.static(__dirname + "/public")); //static because we're telling the server to look for static files (html, css, js, image files)
+var uep = bodyParser.urlencoded({ extended: false });
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); //now the server can parse the data it's being sent from the controller
 
@@ -98,7 +99,7 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
                 if (key == user){
                     if (pass == docs[index][key].info.password){
                         console.log("password match");
-                        res(req.body.username);
+                        res.json({"username": req.body.username, "_id": req.body._id});
                     }
                 } else {
                     console.log("username/password incorrect"); //create error message
@@ -123,7 +124,7 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
     //newEntry[username].info.following = [];
     
     db.users.insert(newEntry, function(err, doc) { //inserts into database
-        res.json(doc); //responds with NEW data back to controller
+        res.json({"username": doc.username, "_id": doc._id});
     });
     
     //create folder to store images
@@ -149,23 +150,15 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 
 /////////////////////////////////////////////////////////////////////////////////
 
-app.post('/loadnewsfeed', function (req, res) { //listens for post request from controller
-    console.log(req.body);
+app.post('/loadnewsfeed', uep, function (req, res) { //listens for post request from controller
+    var info = getInfo(req.body.user);
+    res.json(info);
 });
 
 /////////////////////////////////////////////////////////////////////////////////
 
 function getInfo(user) {
-      db.users.find(function (err, docs) { //docs is the actual data from the server
-
-        for (var index in docs) {
-            for (var key in docs[index]){
-                if (key == user){
-                    return docs[index].key; //returns all info for user
-                } else {
-                    console.log("no info for this user"); //create error message
-                }
-            }
-        }
-   });
+      var info = db.users.find({"username": user});
+      console.log(info);
+      return db.users.find({"username": user});
 }
