@@ -217,7 +217,8 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 /////////////////////////////////////////////////////////////////////////////////
 
 function getInfo(user) {
-      var info = db.users.find({"username": user});
+      //this is where u should query the database for teh info you need
+      //var info = db.users.find({"username": user}); this doesnt work
       console.log(info);
       return db.users.find({"username": user});
 }
