@@ -1,3 +1,4 @@
+<div class="container">
 <h3>{{$ctrl.username}}</h3>
 
 <strong>{{$ctrl.user.firstname}} {{$ctrl.user.lastname}}</strong>
@@ -8,3 +9,19 @@ Email: {{$ctrl.user.email}}
 		{{$ctrl.user.bio}}
 	</p>
 </blockquote>
+<div class ="col-md-6">
+	<strong>Followers: </strong>
+	<ul>
+		<li ng-repeat="follower in $ctrl.user.followers"></li>
+	</ul>
+</div>
+<div class="col-md-6"></div>
+	<strong> Following: </strong>
+	<ul>
+		<li ng-repeat="follow in $ctrl.user.following"></li>
+	</ul>
+</div>
+
+
+<div>
+</div>

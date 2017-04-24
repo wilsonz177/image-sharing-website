@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var mkdirp = require('mkdirp');
 
 app.use(express.static(__dirname + "/public")); //static because we're telling the server to look for static files (html, css, js, image files)
+// app.use(express.static(__dirname + "/images"));
+// app.use(express.static(__dirname +"/img"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); //now the server can parse the data it's being sent from the controller
 
@@ -23,7 +25,7 @@ var myCaption = '';
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    var location = './images/' + username
+    var location = './public/images/' + username
     cb(null, location);
   },
   filename: function (req, file, cb) {
@@ -55,7 +57,8 @@ var upload = multer({
 app.post('/upload', function (req, res) {
     
   upload(req, res, function (err) {
-    var myfilepath = req.file.path;
+    var myfilepath = req.file.path.substring(6,req.file.path.length);
+    console.log('MY FILE PATH:', myfilepath);
     if (err) {
       if(err.code === 'LIMIT_FILE_SIZE'){
         res.json({success: false, message: "File size is too large, max size is 10 MB"});
@@ -192,8 +195,8 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
         res.json({"username": doc.username, "_id": doc._id});
     });
     
-    var wilsonPath = "/Users/wilsonzhong/cse330/spring2017-cp-441746-435490/FinalProject/images/";
-    var mirhadPath = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/";
+    var wilsonPath = "/Users/wilsonzhong/cse330/spring2017-cp-441746-435490/FinalProject/public/images/";
+    var mirhadPath = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/public/images/";
 
     //create folder to store images
     var path = mirhadPath + req.body.username;
