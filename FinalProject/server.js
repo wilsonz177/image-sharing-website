@@ -196,7 +196,7 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
     var mirhadPath = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/images/";
 
     //create folder to store images
-    var path = wilsonPath + req.body.username;
+    var path = mirhadPath + req.body.username;
     mkdirp(path, function (err) {
         if (err){
             console.error(err);
