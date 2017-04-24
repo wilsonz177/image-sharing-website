@@ -25,6 +25,7 @@ angular.
           console.log('hey im undefined');
           self.message = "Please attach a file";
         }else{
+          postCaption();
           $scope.file.upload.username = "tom";
           fd.append('myfile', $scope.file.upload);
           // fd.append('username', $scope.username);
@@ -41,7 +42,6 @@ angular.
               console.log('success');
               self.message = data.data.message;
               $scope.file = {};
-               postCaption();
             }else{
               $scope.uploading = false;
               $scope.alert = 'alert alert-danger';
