@@ -1,4 +1,4 @@
 'use strict';
 
 // Define the `logIn` module
-angular.module('logIn', []);
+angular.module('logIn', ['ngCookies']);

@@ -1,5 +1,10 @@
-<body>
+
         <div class="container">
+            <div ng-show="message">
+            <div ng-class = "alert">
+                {{$ctrl.message}}
+            </div>
+            </div>
             
             <nav class="navbar navbar-default">
   <div class="container-fluid">
@@ -27,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="post in $ctrl.globalfeed">
+                    <tr ng-repeat="post in $ctrl.globalfeed | filter:search">
                         <td><img ng-src="../{{post.pic.filepath}}"  alt="No Image!" height="100" width="100"/></td>
                         <td>{{post.name}}</td>
                         <td>{{post.pic.caption}}</td>
@@ -38,5 +43,5 @@
             </table>
     
         </div>
-</body>
+        <h3 ng-model="foo">{{$ctrl.key.stuff}}</h3>
 

@@ -5,16 +5,17 @@ angular.
   module('addPost').
   component('addPost', {
     templateUrl: 'addpost/add-post.template.html',
-    controller: ['$scope', '$http', '$timeout', function AddPostController($scope, $http, $timeout) {
+    controller: ['$scope', '$http', '$timeout', '$cookies', function AddPostController($scope, $http, $timeout, $cookies) {
       var self = this;
       $scope.message = false;
       $scope.alert = '';
       $scope.file ={};
       self.message = "hello";
       self.default = "http://www.bofep.org/wpbofep/wp-content/uploads/2013/05/Insert-Photo-Here.jpg";
-      $scope.username = "Tom"
+      // $scope.username = "Tom"
       self.myCaption = '';
-
+      self.username = $cookies.get('username');
+      console.log('current user: ', self.username);
       self.Submit = function(){
         //shows the progress bar and stuff
         $scope.uploading = true;
@@ -26,7 +27,7 @@ angular.
           self.message = "Please attach a file";
         }else{
           postCaption();
-          $scope.file.upload.username = "tom";
+          // $scope.file.upload.username = "tom";
           fd.append('myfile', $scope.file.upload);
           // fd.append('username', $scope.username);
           // fd.append('mycaption', self.myCaption);
@@ -78,6 +79,7 @@ angular.
       var postCaption = function(){
         var temp = new Object();
         temp.caption = self.myCaption;
+        temp.username = self.username;
         // console.log("url Path: ", )
         // temp.urlPath = 
         var jsonString = JSON.stringify(temp);

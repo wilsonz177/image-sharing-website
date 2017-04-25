@@ -1,7 +1,7 @@
 'use strict';
 
 // Define the `logIn` module
-angular.module('addPost', ['fileModelDirective',])
+angular.module('addPost', ['fileModelDirective', 'ngCookies'])
 
  // factory('doUpload', ['$http', function($http) {
     

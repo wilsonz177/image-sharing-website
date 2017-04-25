@@ -10,5 +10,6 @@ angular.module('instaBam', [
   'addComment',
   'viewProfile',
   'searchBar',
-  "ui.bootstrap"
+  'ngCookies',
+  'ui.bootstrap'
 ]);

@@ -1,27 +1,28 @@
 <div class="container">
-<h3>{{$ctrl.username}}</h3>
+<h3>{{$ctrl.viewUser.username}}</h3>
 
-<strong>{{$ctrl.user.firstname}} {{$ctrl.user.lastname}}</strong>
+<strong>{{$ctrl.viewUser.firstname}} {{$ctrl.viewUser.lastname}}</strong>
 <br>
-Email: {{$ctrl.user.email}}
+Email: {{$ctrl.viewUser.email}}
 <blockquote>
 	<p>
-		{{$ctrl.user.bio}}
+		{{$ctrl.viewUser.bio}}
 	</p>
 </blockquote>
 <div class ="col-md-6">
 	<strong>Followers: </strong>
 	<ul>
-		<li ng-repeat="follower in $ctrl.user.followers"></li>
+		<li ng-repeat="follower in $ctrl.viewUser.followers"></li>
 	</ul>
 </div>
 <div class="col-md-6"></div>
 	<strong> Following: </strong>
 	<ul>
-		<li ng-repeat="follow in $ctrl.user.following"></li>
+		<li ng-repeat="follow in $ctrl.viewUser.following"></li>
 	</ul>
 </div>
 
 
 <div>
+<news-feed key="$ctrl.key"></news-feed>
 </div>
