@@ -1,6 +1,7 @@
 <body>
         <div class="container">
             
+            <label>Search by: <input type="text" ng-model="search"/></label>
             <table class="table">
                 <thead>
                     <tr>
@@ -11,7 +12,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="post in $ctrl.globalfeed">
+                    <tr ng-repeat="post in $ctrl.globalfeed | filter:search">
                         <td><img ng-src="../{{post.pic.filepath}}"  alt="No Image!" height="100" width="100"/></td>
                         <td>{{post.name}}</td>
                         <td>{{post.pic.caption}}</td>
@@ -21,5 +22,6 @@
                 </tbody>
             </table>
         </div>
+        <h3 ng-model="foo">{{$ctrl.key.stuff}}</h3>
 </body>
 

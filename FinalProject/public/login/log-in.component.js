@@ -5,7 +5,7 @@ angular.
   module('logIn').
   component('logIn', {
     templateUrl: 'login/log-in.template.html',
-    controller: ['$http', '$scope', '$location', '$rootScope', function LoginController($http, $scope, $location, $rootScope) {
+    controller: ['$http', '$scope', '$location', '$rootScope', '$cookies', function LoginController($http, $scope, $location, $rootScope, $cookies) {
       var self = this;
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -20,8 +20,11 @@ angular.
             //transformRequest: angular.identity,
             headers: {'Content-Type': 'application/json'}
       }).then(function(response) {
-            $rootScope.user = response.username;
-            $rootScope._id = response._id;
+            $rootScope.user = response.data.username;
+            $rootScope._id = response.data._id;
+            $cookies.put("user", response.data.username);
+            $cookies.put("id", response.data._id);
+            console.log(response.data);
             var path = '/newsfeed';
             $location.path(path);
         });
@@ -40,6 +43,8 @@ angular.
         console.log("this is the new response: ", response);
             $rootScope.user = response.data.username;
             $rootScope._id = response.data._id;
+            $cookies.put("user", response.data.username);
+            $cookies.put("id", response.data._id);
             $location.path('/newsfeed');
         });
       };

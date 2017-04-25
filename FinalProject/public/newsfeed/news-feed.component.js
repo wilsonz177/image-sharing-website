@@ -5,18 +5,40 @@ angular.
   module('newsFeed').
   component('newsFeed', {
     templateUrl: 'newsfeed/news-feed.template.html',
-    controller: ['$http','$rootScope', function NewsFeedController($http, $rootScope) {
+    controller: ['$http','$rootScope', '$scope', '$cookies', function NewsFeedController($http, $rootScope, $scope, $cookies) {
       var self = this;
 /////////////////////////////////////////////////////////////////////////////////
       self.globalfeed = [];
+      console.log('before errthang', self.key);
+      console.log("cookies user: ", $cookies.get('user'));
+      console.log("normal scope: ", $scope.user);
+      //detects changes to the variable key
+      this.$onChanges= function (changes) {
+        if (changes.key) {
+          if (changes.key.currentValue == null){
+            loadGlobalNewsFeed("getAll");
+            console.log('get all of em');
+          }else if (changes.key.currentValue.stuff == "following"){
+            loadGlobalNewsFeed("getFollowing");
+            console.log('get following');
+          }
 
-      var loadGlobalNewsFeed = function(){
+        }
+      };
+        
+      
+
+      console.log('here');
+
+      var loadGlobalNewsFeed = function(input){
         $http.get('/globalnewsfeed/').then(function(response){
           console.log(response.data);
           var data = response.data
           console.log('length: ', data.length);
-         
+          // self.key ={};
+          // self.key.stuff ="you foo";
 
+          console.log("rootscope:", $rootScope.user);
           //put everything into global feed but unordered
           for(var i=0; i<data.length; i++){
             for(var j=0; j<data[i].pics.length; j++){
@@ -35,16 +57,16 @@ angular.
               return parseFloat(b.pic.timestamp) - parseFloat(a.pic.timestamp);
           });
 
-          console.log(self.globalfeed)
-
-          console.log('test: ', typeof(self.globalfeed[0].pic.filepath))
+        
 
         });
       };
-
-      loadGlobalNewsFeed();
-
-
+      
+        
+      
+      
+      console.log("hey");
+      console.log("dont make a foo outta yourself: ", self.foo);
 
       // var loadnewsfeed = function() {
       //   $http({
@@ -61,5 +83,9 @@ angular.
 /////////////////////////////////////////////////////////////////////////////////
     
 
-    }]
+    }],
+    bindings: {
+      key: '<'
+    }
   });
+

@@ -237,13 +237,13 @@ app.get('/globalnewsfeed', function(req, res){
         // console.log('docs length: ', docs.length);
         var globalfeed = [];
         for(var i = 0; i<docs.length; i++){
-            console.log(docs[i].username, ": and their pics: ", docs[i].pics);
+            // console.log(docs[i].username, ": and their pics: ", docs[i].pics);
             var temp = {};
             temp.username = docs[i].username;
             temp.pics = docs[i].pics;
             globalfeed.push(temp);
         }
-        console.log(globalfeed);
+        // console.log(globalfeed);
         res.json(globalfeed);
     })
 

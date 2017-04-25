@@ -4,10 +4,11 @@ angular.
   module('viewProfile').
   component('viewProfile', {
     templateUrl: 'viewprofile/view-profile.template.html',
-    controller: ['$scope', '$http', '$routeParams', function viewProfileController($scope, $http, $routeParams) {
+    controller: ['$scope', '$http', '$routeParams', '$rootScope', function viewProfileController($scope, $http, $routeParams, $rootScope) {
     	var self = this;
     	self.username = $routeParams.username;
       self.user;
+      console.log('got here first');
     	$http.get('/getProfile/' + self.username, {
         transformRequest: angular.identity,
         // headers: { 'Content-Type': undefined },
@@ -18,5 +19,8 @@ angular.
       });
 
 
+      self.key = {}
+      self.key.stuff = "following";
+      console.log('end of viewprofile component');
     }]
    });
