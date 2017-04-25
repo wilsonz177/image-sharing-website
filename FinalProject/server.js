@@ -165,6 +165,22 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
 
 /////////////////////////////////////////////////////////////////////////////////
 
+app.get('/allusers', function (req, res) {
+            db.users.find(function(err,docs){
+            if(err){
+                console.log(err);
+            }
+            var allusers = [];
+            for(var i = 0; i<docs.length; i++){
+                allusers.push(docs[i].username);
+            }
+            res.json({"allusers": allusers});
+        });
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////
+
 app.post('/adduser', function (req, res) { //listens for post request from controller
 
     var newEntry = req.body;
@@ -330,7 +346,7 @@ app.get('/globalnewsfeed/', function(req, res){
             }
             // console.log(globalfeed);
             res.json({"globalfeed": globalfeed, "allusers": allusers});
-        })
+        });
     }else if(req.query.get == "following"){
         console.log('getfollowing');
         db.users.find({username: req.query.username}, function(err,docs){

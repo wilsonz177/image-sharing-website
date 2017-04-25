@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 angular.
   module('viewProfile').
@@ -20,7 +20,7 @@ angular.
       });
 
 
-      self.key = {} 
+      self.key = {};
 
       //"following" for loading the current user's newsfeed
       //"individual" for loading viewing all the posts made by a user
