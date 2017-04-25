@@ -1,5 +1,10 @@
-<body>
+
         <div class="container">
+            <div ng-show="message">
+            <div ng-class = "alert">
+                {{$ctrl.message}}
+            </div>
+            </div>
             
             <label>Search by: <input type="text" ng-model="search"/></label>
             <table class="table">
@@ -23,5 +28,5 @@
             </table>
         </div>
         <h3 ng-model="foo">{{$ctrl.key.stuff}}</h3>
-</body>
+
 

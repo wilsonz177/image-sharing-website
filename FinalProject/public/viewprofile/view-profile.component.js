@@ -4,23 +4,28 @@ angular.
   module('viewProfile').
   component('viewProfile', {
     templateUrl: 'viewprofile/view-profile.template.html',
-    controller: ['$scope', '$http', '$routeParams', '$rootScope', function viewProfileController($scope, $http, $routeParams, $rootScope) {
+    controller: ['$scope', '$http', '$routeParams', '$rootScope', '$cookies', function viewProfileController($scope, $http, $routeParams, $rootScope, $cookies) {
     	var self = this;
-    	self.username = $routeParams.username;
-      self.user;
+    	self.viewUsername = $routeParams.username;
+      self.viewUser;
+      self.username = $cookies.get('username');
       console.log('got here first');
-    	$http.get('/getProfile/' + self.username, {
+    	$http.get('/getProfile/' + self.viewUsername, {
         transformRequest: angular.identity,
         // headers: { 'Content-Type': undefined },
-        // params: {username: self.username}
+        // params: {viewUser: self.viewUser}
       }).then(function(data){
         console.log('got data: ', data.data);
-        self.user = data.data;
+        self.viewUser = data.data;
       });
 
 
-      self.key = {}
-      self.key.stuff = "following";
+      self.key = {} 
+
+      //"following" for loading the current user's newsfeed
+      //"individual" for loading viewing all the posts made by a user
+      self.key.stuff = "individual";
+      self.key.who = self.viewUsername;
       console.log('end of viewprofile component');
     }]
    });

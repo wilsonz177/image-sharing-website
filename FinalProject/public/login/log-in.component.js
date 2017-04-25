@@ -22,7 +22,7 @@ angular.
       }).then(function(response) {
             $rootScope.user = response.data.username;
             $rootScope._id = response.data._id;
-            $cookies.put("user", response.data.username);
+            $cookies.put("username", response.data.username);
             $cookies.put("id", response.data._id);
             console.log(response.data);
             var path = '/newsfeed';
@@ -43,7 +43,7 @@ angular.
         console.log("this is the new response: ", response);
             $rootScope.user = response.data.username;
             $rootScope._id = response.data._id;
-            $cookies.put("user", response.data.username);
+            $cookies.put("username", response.data.username);
             $cookies.put("id", response.data._id);
             $location.path('/newsfeed');
         });

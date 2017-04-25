@@ -110,6 +110,7 @@ app.post('/uploadCaption', function (req, res) {
     console.log("received upload caption post");
     console.log("my body: ", req.body.caption);
     myCaption = req.body.caption;
+    username = req.body.username;
     res.json({message: "what the fuck is up", success: true});
 });
 
@@ -228,26 +229,139 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 
 /////////////////////////////////////////////////////////////////////////////////
 
-app.get('/globalnewsfeed', function(req, res){
+// app.get('/globalnewsfeed/:who/:user/', function(req, res){
+//     console.log('received get request for global news feed');
+//     console.log(req.params);
+//     if(req.params.who == "getAll"){
+//         console.log('getall');
+//         db.users.find({private: false}, function(err,docs){
+//             if(err){
+//                 console.log(err);
+//             }
+//             // console.log('docs length: ', docs.length);
+//             var globalfeed = [];
+//             for(var i = 0; i<docs.length; i++){
+//                 // console.log(docs[i].username, ": and their pics: ", docs[i].pics);
+//                 var temp = {};
+//                 temp.username = docs[i].username;
+//                 temp.pics = docs[i].pics;
+//                 globalfeed.push(temp);
+//             }
+//             // console.log(globalfeed);
+//             res.json(globalfeed);
+//         })
+//     }else if(req.params.who == "getFollowing"){
+//         console.log('getfollowing');
+//         db.users.find({username: req.params.user}, function(err,docs){
+//             if(err){
+//                 console.log(err);
+//             }
+//             console.log('get following', docs);
+//             var following = docs.following;
+//         })
+//     } else if (req.params.who == "getIndividual"){
+//         console.log(req.params.individual);
+//     }
+
+// });
+
+// app.get('/globalnewsfeed/', function(req, res){
+//     console.log('received get request for global news feed');
+//     console.log(req.params);
+
+//         console.log('getall');
+//         db.users.find({private: false}, function(err,docs){
+//             if(err){
+//                 console.log(err);
+//             }
+//             // console.log('docs length: ', docs.length);
+//             var globalfeed = [];
+//             for(var i = 0; i<docs.length; i++){
+//                 // console.log(docs[i].username, ": and their pics: ", docs[i].pics);
+//                 var temp = {};
+//                 temp.username = docs[i].username;
+//                 temp.pics = docs[i].pics;
+//                 globalfeed.push(temp);
+//             }
+//             // console.log(globalfeed);
+//             res.json(globalfeed);
+//         })
+    
+
+// });
+
+
+app.get('/globalnewsfeed/', function(req, res){
     console.log('received get request for global news feed');
-    db.users.find({private: false}, function(err,docs){
-        if(err){
-            console.log(err);
-        }
-        // console.log('docs length: ', docs.length);
-        var globalfeed = [];
-        for(var i = 0; i<docs.length; i++){
-            // console.log(docs[i].username, ": and their pics: ", docs[i].pics);
-            var temp = {};
-            temp.username = docs[i].username;
-            temp.pics = docs[i].pics;
-            globalfeed.push(temp);
-        }
-        // console.log(globalfeed);
-        res.json(globalfeed);
-    })
+    console.log('my req.query: ', req.query);
+    if(req.query.get == "all"){
+        console.log('getall');
+        db.users.find({private: false}, function(err,docs){
+            if(err){
+                console.log(err);
+            }
+            // console.log('docs length: ', docs.length);
+            var globalfeed = [];
+            for(var i = 0; i<docs.length; i++){
+                // console.log(docs[i].username, ": and their pics: ", docs[i].pics);
+                var temp = {};
+                temp.username = docs[i].username;
+                temp.pics = docs[i].pics;
+                globalfeed.push(temp);
+            }
+            // console.log(globalfeed);
+            res.json(globalfeed);
+        })
+    }else if(req.query.get == "following"){
+        console.log('getfollowing');
+        db.users.find({username: req.query.username}, function(err,docs){
+            if(err){
+                console.log(err);
+            }
+            console.log('get following', docs);
+            var following = docs[0].following;
+            console.log('following: ', following);
+        })
+    } else if(req.query.get ="individual"){
+        console.log('get individual');
+        db.users.find({username : req.query.who}, function(err,docs){
+            if(err){
+                console.log(err);
+            }
+            console.log('get individual docs: ', docs[0]);
+            if(docs[0].private == true){
+                //THEN LOOP THROUGH THE FOLLOWERS ARRAY: docs[0].followers
+                var found = false;
+                for(var i =0; i<docs[0].followers.length; i++){
+                    if(docs[0].followers[i] == req.query.username){
+                        found = true;
+                        break;
+                    }
+                }
+                if(found){
+                    var feed = [];
+                    var temp = {};
+                    temp.username = docs[0].username;
+                    temp.pics = docs[0].pics;
+                    feed.push(temp);
+                    res.json(feed);
+                }else{
+                    res.json({success: "false", message:"You cannot view this private user's posts, please request to follow the user"});
+                }
+            } else {
+                var feed = [];
+                var temp = {};
+                temp.username = docs[0].username;
+                temp.pics = docs[0].pics;
+                feed.push(temp);
+                res.json(feed);
+            }
+        })
+    }
+    
 
 });
+
 
 
 

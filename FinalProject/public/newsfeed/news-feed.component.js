@@ -10,17 +10,27 @@ angular.
 /////////////////////////////////////////////////////////////////////////////////
       self.globalfeed = [];
       console.log('before errthang', self.key);
-      console.log("cookies user: ", $cookies.get('user'));
-      console.log("normal scope: ", $scope.user);
+      console.log("cookies user: ", $cookies.get('username'));
+      self.username = $cookies.get('username');
       //detects changes to the variable key
       this.$onChanges= function (changes) {
         if (changes.key) {
           if (changes.key.currentValue == null){
-            loadGlobalNewsFeed("getAll");
             console.log('get all of em');
+            $http.get('/globalnewsfeed/?get=all').then(function(response){
+              callback(response);
+            });
           }else if (changes.key.currentValue.stuff == "following"){
-            loadGlobalNewsFeed("getFollowing");
             console.log('get following');
+            $http.get('/globalnewsfeed/?get=following&username='+ self.username).then(function(response){
+              callback(response);
+            });
+           
+          }else if(changes.key.currentValue.stuff =="individual"){
+            console.log('get and indivduals posts');
+            $http.get('/globalnewsfeed/?get=individual&username='+ self.username + '&who=' + changes.key.currentValue.who).then(function(response){
+              callback(response);
+            });
           }
 
         }
@@ -30,37 +40,47 @@ angular.
 
       console.log('here');
 
-      var loadGlobalNewsFeed = function(input){
-        $http.get('/globalnewsfeed/').then(function(response){
+      // var loadGlobalNewsFeed = function(input, individual){
+      //   $http.get('/globalnewsfeed/').then(function(response){
+      //     callback(response);
+      //   });
+      // };
+
+      var callback = function(response){
           console.log(response.data);
           var data = response.data
           console.log('length: ', data.length);
           // self.key ={};
           // self.key.stuff ="you foo";
-
-          console.log("rootscope:", $rootScope.user);
-          //put everything into global feed but unordered
-          for(var i=0; i<data.length; i++){
-            for(var j=0; j<data[i].pics.length; j++){
-              var temp = {}
-              temp.name = data[i].username;
-              temp.pic = data[i].pics[j];
-              self.globalfeed.push(temp);
+          if(response.data.success == null){
+          
+            //put everything into global feed but unordered
+            for(var i=0; i<data.length; i++){
+              for(var j=0; j<data[i].pics.length; j++){
+                var temp = {}
+                temp.name = data[i].username;
+                temp.pic = data[i].pics[j];
+                self.globalfeed.push(temp);
+              }
+              // totalpics += response.data[i].pics.length;
+              // userPicCount.push(0);
+              // userPics.push(response.data[i].pics.length-1);
             }
-            // totalpics += response.data[i].pics.length;
-            // userPicCount.push(0);
-            // userPics.push(response.data[i].pics.length-1);
+            console.log(self.globalfeed);
+            //sort my global feed
+            self.globalfeed.sort(function(a, b) {
+                return parseFloat(b.pic.timestamp) - parseFloat(a.pic.timestamp);
+            });
+          }else if(response.data.success == "false"){
+            console.log("failure response: ",response.data.message);
+            $scope.message = true;
+            $scope.alert = 'alert alert-danger';
+            self.message = response.data.message;
           }
-          console.log(self.globalfeed);
-          //sort my global feed
-          self.globalfeed.sort(function(a, b) {
-              return parseFloat(b.pic.timestamp) - parseFloat(a.pic.timestamp);
-          });
 
         
 
-        });
-      };
+      }
       
         
       
