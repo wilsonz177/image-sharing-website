@@ -221,41 +221,7 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 
 /////////////////////////////////////////////////////////////////////////////////
 
-// app.get('/globalnewsfeed/:who/:user/', function(req, res){
-//     console.log('received get request for global news feed');
-//     console.log(req.params);
-//     if(req.params.who == "getAll"){
-//         console.log('getall');
-//         db.users.find({private: false}, function(err,docs){
-//             if(err){
-//                 console.log(err);
-//             }
-//             // console.log('docs length: ', docs.length);
-//             var globalfeed = [];
-//             for(var i = 0; i<docs.length; i++){
-//                 // console.log(docs[i].username, ": and their pics: ", docs[i].pics);
-//                 var temp = {};
-//                 temp.username = docs[i].username;
-//                 temp.pics = docs[i].pics;
-//                 globalfeed.push(temp);
-//             }
-//             // console.log(globalfeed);
-//             res.json(globalfeed);
-//         })
-//     }else if(req.params.who == "getFollowing"){
-//         console.log('getfollowing');
-//         db.users.find({username: req.params.user}, function(err,docs){
-//             if(err){
-//                 console.log(err);
-//             }
-//             console.log('get following', docs);
-//             var following = docs.following;
-//         })
-//     } else if (req.params.who == "getIndividual"){
-//         console.log(req.params.individual);
-//     }
 
-// });
 
 // app.get('/globalnewsfeed/', function(req, res){
 //     console.log('received get request for global news feed');
@@ -319,17 +285,15 @@ app.get('/globalnewsfeed/', function(req, res){
             }
             // console.log('docs length: ', docs.length);
             var globalfeed = [];
-			var allusers = [];
             for(var i = 0; i<docs.length; i++){
                 // console.log(docs[i].username, ": and their pics: ", docs[i].pics);
                 var temp = {};
                 temp.username = docs[i].username;
                 temp.pics = docs[i].pics;
-				allusers.push(temp.username);
                 globalfeed.push(temp);
             }
             // console.log(globalfeed);
-            res.json({"globalfeed": globalfeed, "allusers": allusers});
+            res.json(globalfeed);
         })
     }else if(req.query.get == "following"){
         console.log('getfollowing');
