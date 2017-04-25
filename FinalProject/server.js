@@ -338,6 +338,10 @@ app.get('/globalnewsfeed/', function(req, res){
                         break;
                     }
                 }
+                if(req.query.username == req.query.who){
+                    found = true;
+                }
+
                 if(found){
                     var feed = [];
                     var temp = {};
