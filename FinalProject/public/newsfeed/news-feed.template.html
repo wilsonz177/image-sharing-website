@@ -16,7 +16,7 @@
       <li><a href="#">Home</a></li>
       <li><a href="#!/newsfeed">Explore</a></li>
       <li><a href="#!/addpost">Add Post</a></li>
-      <li><input name="allusers" id="allusers" type="text" placeholder="search for someone here..." ng-model="$ctrl.selected" uib-typeahead="user for user in $ctrl.allusers | filter:$viewValue | limitTo:8" class="form-control"></li>
+      <li><input name="allusers" id="allusers" type="text" placeholder="search for someone here..." ng-model="$ctrl.selected" typeahead-on-select="onSelect($item, $model, $label)" uib-typeahead="user for user in $ctrl.allusers | filter:$viewValue | limitTo:8" class="form-control"></li>
       <li><a href="#!/login">Logout</a></li>
     </ul>
   </div>

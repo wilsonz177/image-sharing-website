@@ -5,7 +5,7 @@ angular.
   module('newsFeed').
   component('newsFeed', {
     templateUrl: 'newsfeed/news-feed.template.html',
-    controller: ['$http','$rootScope', '$scope', '$cookies', function NewsFeedController($http, $rootScope, $scope, $cookies) {
+    controller: ['$http','$rootScope', '$scope', '$cookies', '$location', function NewsFeedController($http, $rootScope, $scope, $cookies, $location) {
       var self = this;
 /////////////////////////////////////////////////////////////////////////////////
       self.globalfeed = [];
@@ -25,9 +25,9 @@ angular.
             $http.get('/globalnewsfeed/?get=following&username='+ self.username).then(function(response){
               callback(response);
             });
-           
+          
           }else if(changes.key.currentValue.stuff =="individual"){
-            console.log('get and indivduals posts');
+            console.log('get and individuals posts');
             $http.get('/globalnewsfeed/?get=individual&username='+ self.username + '&who=' + changes.key.currentValue.who).then(function(response){
               callback(response);
             });
@@ -36,9 +36,13 @@ angular.
         }
       };
         
-      
-
-      console.log('here');
+    $scope.onSelect = function ($item, $model, $label) {
+      $scope.$item = $item;
+      $scope.$model = $model;
+      $scope.$label = $label;
+      var path = '/viewuser/' + $item;
+      $location.path(path);
+};
 
       // var loadGlobalNewsFeed = function(input, individual){
       //   $http.get('/globalnewsfeed/').then(function(response){
@@ -47,9 +51,8 @@ angular.
       // };
 
       var callback = function(response){
-          console.log(response.data);
-          var data = response.data.globalfeed
-          console.log('length: ', data.length);
+          var data = response.data.globalfeed;
+
           // self.key ={};
           // self.key.stuff ="you foo";
           if(response.data.success == null){
@@ -57,7 +60,7 @@ angular.
             //put everything into global feed but unordered
             for(var i=0; i<data.length; i++){
               for(var j=0; j<data[i].pics.length; j++){
-                var temp = {}
+                var temp = {};
                 temp.name = data[i].username;
                 temp.pic = data[i].pics[j];
                 self.globalfeed.push(temp);

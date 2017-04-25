@@ -281,7 +281,32 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
     
 
 // });
-
+app.post('/follow', function(req, res){
+  var userloggedin = req.body.loggedinuser;
+  console.log(userloggedin);
+  
+  var userbeingfollowed = req.body.userbeingfollowed;
+  console.log(userbeingfollowed);
+  
+              db.users.update(
+                   {username: userloggedin},
+                   {$push : {
+                             following : userbeingfollowed
+                          }
+                    }
+            );
+              
+              db.users.update(
+                   {username: userbeingfollowed},
+                   {$push : {
+                             followers : userloggedin
+                          }
+                    }
+            );
+              
+            res.json({"username": userbeingfollowed});
+  
+});
 
 app.get('/globalnewsfeed/', function(req, res){
     console.log('received get request for global news feed');

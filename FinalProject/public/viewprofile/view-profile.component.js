@@ -4,7 +4,7 @@ angular.
   module('viewProfile').
   component('viewProfile', {
     templateUrl: 'viewprofile/view-profile.template.html',
-    controller: ['$scope', '$http', '$routeParams', '$rootScope', '$cookies', function viewProfileController($scope, $http, $routeParams, $rootScope, $cookies) {
+    controller: ['$scope', '$http', '$routeParams', '$rootScope', '$cookies', '$location', function viewProfileController($scope, $http, $routeParams, $rootScope, $cookies, $location) {
     	var self = this;
     	self.viewUsername = $routeParams.username;
       self.viewUser;
@@ -27,5 +27,23 @@ angular.
       self.key.stuff = "individual";
       self.key.who = self.viewUsername;
       console.log('end of viewprofile component');
+      
+      self.follow = function(){
+        console.log("in the follow function");
+        var u = $cookies.get('username');
+        $http({
+        method: 'POST',
+        url:'/follow',
+        data: {"loggedinuser": u, "userbeingfollowed": self.viewUser.username}
+      })
+      .then(function(response) {
+            var path = '/viewuser/' + response.data.username;
+            $location.path(path);
+        });
+      };
+      
+      self.unfollow = function(){
+        
+      };
     }]
    });
