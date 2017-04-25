@@ -58,7 +58,6 @@ app.post('/upload', function (req, res) {
     
   upload(req, res, function (err) {
     var myfilepath = req.file.path.substring(6,req.file.path.length);
-    console.log('MY FILE PATH:', myfilepath);
     if (err) {
       if(err.code === 'LIMIT_FILE_SIZE'){
         res.json({success: false, message: "File size is too large, max size is 10 MB"});
@@ -76,7 +75,6 @@ app.post('/upload', function (req, res) {
             res.json({success: true, message: "file was uploaded"});
             var query = {};
             query['username'] = username;
-            console.log('myusername: ', username);
             
             var d = new Date();
             
@@ -107,8 +105,6 @@ app.post('/upload', function (req, res) {
 
 
 app.post('/uploadCaption', function (req, res) {
-    console.log("received upload caption post");
-    console.log("my body: ", req.body.caption);
     myCaption = req.body.caption;
     res.json({message: "what the fuck is up", success: true});
 });
@@ -116,7 +112,6 @@ app.post('/uploadCaption', function (req, res) {
 /////////////////////////////////////////////////////////////////////////////////
 
 app.post('/addComment', function(req, res){
-    console.log('received add comment post: ', req.body);
     res.json({message: "add comment shit", success: true});
 });
 
@@ -124,7 +119,6 @@ app.post('/addComment', function(req, res){
 /////////////////////////////////////////////////////////////////////////////////
 
 app.get('/getProfile/:username', function(req,res){
-    console.log('received get profile: ', req.params.username);
     db.users.find({username: req.params.username}, function(err,docs){
         if(err){
             console.log(err);
@@ -138,13 +132,11 @@ app.get('/getProfile/:username', function(req,res){
 /////////////////////////////////////////////////////////////////////////////////
 
 app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
-    console.log('check user');
     username = req.body.username;
     var pass = req.body.password;
     
     db.users.find({username: req.body.username}, function(err, docs){
         if(docs[0].password == pass){
-            console.log('password matches');
             res.json({"username" : req.body.username, "_id" : req.body._id});
         }else{
             console.log('incorrect password/username');
@@ -236,16 +228,16 @@ app.get('/globalnewsfeed', function(req, res){
         }
         // console.log('docs length: ', docs.length);
         var globalfeed = [];
+        var allusers = [];
         for(var i = 0; i<docs.length; i++){
-            console.log(docs[i].username, ": and their pics: ", docs[i].pics);
             var temp = {};
             temp.username = docs[i].username;
             temp.pics = docs[i].pics;
+            allusers.push(temp.username);
             globalfeed.push(temp);
         }
-        console.log(globalfeed);
-        res.json(globalfeed);
-    })
+        res.json({"globalfeed": globalfeed, "allusers": allusers});
+    });
 
 });
 
@@ -254,7 +246,6 @@ app.get('/globalnewsfeed', function(req, res){
 function getInfo(user) {
       //this is where u should query the database for teh info you need
       //var info = db.users.find({"username": user}); this doesnt work
-      console.log(info);
       return db.users.find({"username": user});
 }
 app.listen(3000); //listening on port 3000

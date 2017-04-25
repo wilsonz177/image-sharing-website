@@ -30,7 +30,6 @@ angular.
           fd.append('myfile', $scope.file.upload);
           // fd.append('username', $scope.username);
           // fd.append('mycaption', self.myCaption);
-          console.log("ctrl.thatfile: ", $scope.file.upload);
           $http.post('/upload/', fd, {
               transformRequest: angular.identity,
               headers: { 'Content-Type': undefined }
@@ -39,13 +38,11 @@ angular.
             if(data.data.success){
               $scope.uploading = false;
               $scope.alert = 'alert alert-success';
-              console.log('success');
               self.message = data.data.message;
               $scope.file = {};
             }else{
               $scope.uploading = false;
               $scope.alert = 'alert alert-danger';
-              console.log("message: ", data.data.message);
               $scope.file = {};
               self.message = data.data.message;
               console.log('failure');
@@ -79,7 +76,6 @@ angular.
 
 
       var postCaption = function(){
-        console.log("attempt to post caption");
         var temp = new Object();
         temp.caption = self.myCaption;
         // console.log("url Path: ", )

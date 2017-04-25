@@ -37,13 +37,13 @@ angular.
         data: self.newuser
       })
       .then(function(response) {
-        console.log("this is the new response: ", response);
             $rootScope.user = response.data.username;
             $rootScope._id = response.data._id;
             $location.path('/newsfeed');
         });
       };
     
-    
+/////////////////////////////////////////////////////////////////////////////////    
+
     }]
   });

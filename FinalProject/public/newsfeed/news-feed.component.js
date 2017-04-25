@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 // Register `logIn` component, along with its associated controller and template
 angular.
@@ -12,10 +12,7 @@ angular.
 
       var loadGlobalNewsFeed = function(){
         $http.get('/globalnewsfeed/').then(function(response){
-          console.log(response.data);
-          var data = response.data
-          console.log('length: ', data.length);
-         
+          var data = response.data.globalfeed;
 
           //put everything into global feed but unordered
           for(var i=0; i<data.length; i++){
@@ -29,35 +26,19 @@ angular.
             // userPicCount.push(0);
             // userPics.push(response.data[i].pics.length-1);
           }
-          console.log(self.globalfeed);
+          
+          //self.selected = undefined;
+          self.allusers = response.data.allusers;
           //sort my global feed
           self.globalfeed.sort(function(a, b) {
               return parseFloat(b.pic.timestamp) - parseFloat(a.pic.timestamp);
           });
-
-          console.log(self.globalfeed)
-
-          console.log('test: ', typeof(self.globalfeed[0].pic.filepath))
 
         });
       };
 
       loadGlobalNewsFeed();
 
-
-
-      // var loadnewsfeed = function() {
-      //   $http({
-      //   method: 'POST',
-      //   url:'/loadnewsfeed',
-      //   data: {"user": $rootScope.user}
-      // })
-      // .then(function(response) {
-      //   self.contactList = response.data;
-      //   });
-      // };
-      
-     // loadnewsfeed();
 /////////////////////////////////////////////////////////////////////////////////
     
 

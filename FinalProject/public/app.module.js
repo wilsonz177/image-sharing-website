@@ -9,5 +9,6 @@ angular.module('instaBam', [
   'fileModelDirective', 
   'addComment',
   'viewProfile',
-  'searchBar'
+  'searchBar',
+  "ui.bootstrap"
 ]);
