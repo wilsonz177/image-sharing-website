@@ -44,33 +44,27 @@ angular.
       $location.path(path);
 };
 
-      // var loadGlobalNewsFeed = function(input, individual){
-      //   $http.get('/globalnewsfeed/').then(function(response){
-      //     callback(response);
-      //   });
-      // };
+      
+
 
       var callback = function(response){
-          var data = response.data.globalfeed;
-
-          // self.key ={};
-          // self.key.stuff ="you foo";
+          console.log(response.data);
+          var data = response.data
+          console.log('length: ', data.length);
+          
           if(response.data.success == null){
           
             //put everything into global feed but unordered
             for(var i=0; i<data.length; i++){
               for(var j=0; j<data[i].pics.length; j++){
-                var temp = {};
+                var temp = {}
                 temp.name = data[i].username;
                 temp.pic = data[i].pics[j];
                 self.globalfeed.push(temp);
               }
-              // totalpics += response.data[i].pics.length;
-              // userPicCount.push(0);
-              // userPics.push(response.data[i].pics.length-1);
+              
             }
             console.log(self.globalfeed);
-			self.allusers = response.data.allusers;
             //sort my global feed
             self.globalfeed.sort(function(a, b) {
                 return parseFloat(b.pic.timestamp) - parseFloat(a.pic.timestamp);
@@ -89,8 +83,7 @@ angular.
         
       
       
-      console.log("hey");
-      console.log("dont make a foo outta yourself: ", self.foo);
+      
 
       // var loadnewsfeed = function() {
       //   $http({
