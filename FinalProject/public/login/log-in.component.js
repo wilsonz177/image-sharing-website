@@ -25,7 +25,7 @@ angular.
             $cookies.put("username", response.data.username);
             $cookies.put("id", response.data._id);
             console.log(response.data);
-            var path = '/newsfeed';
+            var path = '/home';
             $location.path(path);
         });
       };
@@ -44,7 +44,7 @@ angular.
             $rootScope._id = response.data._id;
             $cookies.put("username", response.data.username);
             $cookies.put("id", response.data._id);
-            $location.path('/newsfeed');
+            $location.path('/home');
         });
       };
     

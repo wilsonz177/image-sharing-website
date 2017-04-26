@@ -25,7 +25,7 @@ angular.
             template: '<search-bar></search-bar><view-profile></view-profile>'
          }).
          when('/home', {
-          template: '<news-feed key="$ctrl.key"></news-feed>',
+          template: '<search-bar></search-bar><news-feed key="$ctrl.key"></news-feed>',
           controller: ['$scope', function homeCtrl($scope){
             this.key = {}
             this.key.stuff = "folllowing";
