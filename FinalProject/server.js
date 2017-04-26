@@ -238,49 +238,7 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 
 /////////////////////////////////////////////////////////////////////////////////
 
-// app.delete('/contactlist/:id', function (req, res) {
-//     var id = req.params.id;
-//     console.log(id);
-//     db.contactList.remove({_id: mongojs.ObjectId(id)}, function (err, doc) {
-//         res.json(doc);
-//     });
-// });
 
-/////////////////////////////////////////////////////////////////////////////////
-
-// app.post('/loadnewsfeed', uep, function (req, res) { //listens for post request from controller
-//     var info = getInfo(req.body.user);
-//     res.json(info);
-// });
-
-/////////////////////////////////////////////////////////////////////////////////
-
-
-
-// app.get('/globalnewsfeed/', function(req, res){
-//     console.log('received get request for global news feed');
-//     console.log(req.params);
-
-//         console.log('getall');
-//         db.users.find({private: false}, function(err,docs){
-//             if(err){
-//                 console.log(err);
-//             }
-//             // console.log('docs length: ', docs.length);
-//             var globalfeed = [];
-//             for(var i = 0; i<docs.length; i++){
-//                 // console.log(docs[i].username, ": and their pics: ", docs[i].pics);
-//                 var temp = {};
-//                 temp.username = docs[i].username;
-//                 temp.pics = docs[i].pics;
-//                 globalfeed.push(temp);
-//             }
-//             // console.log(globalfeed);
-//             res.json(globalfeed);
-//         })
-    
-
-// });
 
 /////////////////////////////////////////////////////////////////////////////
 

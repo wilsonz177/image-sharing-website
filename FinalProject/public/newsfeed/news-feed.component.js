@@ -230,22 +230,6 @@ angular.
         
       
       
-      
-
-      // var loadnewsfeed = function() {
-      //   $http({
-      //   method: 'POST',
-      //   url:'/loadnewsfeed',
-      //   data: {"user": $rootScope.user}
-      // })
-      // .then(function(response) {
-      //   self.contactList = response.data;
-      //   });
-      // };
-      
-     // loadnewsfeed();
-/////////////////////////////////////////////////////////////////////////////////
-    
 
     }],
     bindings: {
