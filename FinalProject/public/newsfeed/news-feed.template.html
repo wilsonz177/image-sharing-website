@@ -5,7 +5,11 @@
                 {{$ctrl.message}}
             </div>
             </div>
-
+            <div ng-show="$ctrl.titleShow">
+            <h2>{{$ctrl.title}}</h2>
+            <h4>{{$ctrl.description}}</h4>
+            </div>
+            <label>Filter Feed: <input type="text" ng-model="search"><label>
             <table class="table">
                 <thead>
                     <tr>
@@ -27,17 +31,29 @@
                         <td>posted {{post.pic.timestamp | date:"MM/dd/yyyy 'at' h:mma"}}</td>
                         <td>
                             <ul ng-repeat="comment in post.pic.comments">
-                                <li>{{comment.username}}: "{{comment.content}}"</li>
+                                <li><strong>{{comment.author}}:</strong> "{{comment.content}}"</li>
                             </ul>
                         </td>
                         <td>
-                            <button type="button" ng-click="$ctrl.showCommentInput(post.num)"; class="btn btn-primary">Add comment</button>
-                            <div  class="form-group" ng-show="post.addComment">
-                            <label>type your comment:<input type="text" class="form-control" ng-model="post.commentToSubmit" ></label>
-                            <button type="button" class="btn btn-info"  ng-click="$ctrl.submitComment(post.num)">Submit your Comment</button>
+                            <div style="padding-bottom: 5px">
+                                <button type="button" ng-click="$ctrl.showCommentInput(post.num)"; class="btn btn-primary btn-sm">Add comment</button>
+                                <div  class="form-group" ng-show="post.addComment">
+                                    <label>type your comment:<input type="text" class="form-control" ng-model="post.commentToSubmit" ></label>
+                                    <button type="button" class="btn btn-info btn-sm"  ng-click="$ctrl.submitComment(post.num)">Submit your Comment</button>
+                                </div>
                             </div>
-                            <button type="button" class="btn btn-success">Edit post</button>
-                            <button type="button" class="btn btn-warning">Delete Post</button>
+
+                            <div ng-show="post.owner" style="padding-bottom: 5px">
+                                <div style="padding-bottom: 5px">
+                                    <button type="button" class="btn btn-success btn-sm" ng-click="$ctrl.showEditCaption(post.num)">Edit caption</button>
+                                    <div  class="form-group" ng-show="post.editCaption">
+                                    <label>type your new caption:<input type="text" class="form-control" ng-model="post.newCaption" ></label>
+                                    <button type="button" class="btn btn-info btn-sm"  ng-click="$ctrl.editPost(post.num)">Submit your new caption</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-warning btn-sm" ng-click="$ctrl.deletePost(post.num)">Delete Post</button>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-sm" ng-click="$ctrl.like(post.num)">Like</button>
                         </td>
                         <!-- <td>{{post.pic.timestamp | date:'yyyy-MM-dd HH:mm:ss Z'}}</td> -->
 

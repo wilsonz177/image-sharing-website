@@ -16,25 +16,36 @@ angular.
 
       var location = $location.path().split("/");
       
-      if(location[1] == "home"){
-        console.log("you're at home");
-        $http.get('/globalnewsfeed/?get=following&username='+ self.username).then(function(response){
-            callback(response);
-        });
-      }
-      if(location[1] == "viewuser"){
-        console.log("youre at view user: ", location[2]);
-        $http.get('/globalnewsfeed/?get=individual&username='+ self.username + '&who=' + location[2]).then(function(response){
-              callback(response);
-        });
-      }
-      if(location[1] == "newsfeed"){
-        console.log("you're at newfeed");
-        $http.get('/globalnewsfeed/?get=all').then(function(response){
-              callback(response);
-        });
-      }
 
+      var loadFeed = function(){
+        self.globalfeed = [];
+        if(location[1] == "home"){
+          self.titleShow = true;
+          self.title = "Home Page";
+          self.description ="posts only by people you're following";
+          console.log("you're at home");
+          $http.get('/globalnewsfeed/?get=following&username='+ self.username).then(function(response){
+              callback(response);
+          });
+        }
+        if(location[1] == "viewuser"){
+          self.titleShow = false;
+          console.log("youre at view user: ", location[2]);
+          $http.get('/globalnewsfeed/?get=individual&username='+ self.username + '&who=' + location[2]).then(function(response){
+                callback(response);
+          });
+        }
+        if(location[1] == "newsfeed"){
+          self.titleShow = true;
+          self.title = "Public News Feed";
+          self.description = "everyone's public posts are shown here"
+          console.log("you're at newfeed");
+          $http.get('/globalnewsfeed/?get=all').then(function(response){
+                callback(response);
+          });
+        }
+      }
+      loadFeed();
 
 
 
@@ -101,8 +112,14 @@ angular.
             for(var i=0; i<self.globalfeed.length; i++){
               self.globalfeed[i].num  = i;
               self.globalfeed[i].addComment = false;
+              self.globalfeed[i].editCaption = false;
+              if(self.globalfeed[i].name == self.username){
+                self.globalfeed[i].owner = true;
+              }else{
+                self.globalfeed[i].owner = false;
+              }
             }
-            console.log("num globals: ", self.globalfeed);
+            
 
           }else if(response.data.success == "false"){
             console.log("failure response: ",response.data.message);
@@ -116,6 +133,10 @@ angular.
       self.showCommentInput = function(number){
         self.globalfeed[number].addComment = !(self.globalfeed[number].addComment);
       };
+
+      self.showEditCaption = function(number){
+        self.globalfeed[number].editCaption = !(self.globalfeed[number].editCaption);
+      }
 
 
       self.submitComment = function(number){
@@ -131,31 +152,84 @@ angular.
               transformRequest: angular.identity,
               headers: { 'Content-Type': 'application/json' }
           }).then(function(response){
-          console.log("post response: ", response);
+            if(response.data.success == "true"){
+              self.globalfeed[number].commentToSubmit = null;
+              loadFeed();
+            }else{
+              if(response.data.success == "false"){
+                console.log("failed to submit comment");
+              }
+            }
         });
       }
 
+      self.like = function(number) {
+        var temp = new Object();
+        temp.who = self.globalfeed[number].name;
+        temp.timestamp = self.globalfeed[number].pic.timestamp;
+        temp.likes = self.globalfeed[number].pic.likes;
+        var jsonString = JSON.stringify(temp);
+        $http.post('/like', jsonString, {
+              transformRequest: angular.identity,
+              headers: { 'Content-Type': 'application/json' }
+          }).then(function(response){
+            if(response.data.success == "true"){
+              self.globalfeed[number].pic.likes = response.data.likes;
+            }else{
+              if(response.data.success == "false"){
+                console.log("failed to like");
+              }
+            }
+        });
+      }
 
-      
+      self.deletePost = function (number){
+        if(self.username == self.globalfeed[number].name){
+          var temp = new Object();
+          temp.who = self.globalfeed[number].name;
+          temp.timestamp = self.globalfeed[number].pic.timestamp;
+          var jsonString = JSON.stringify(temp);
+
+          $http.post('/deletePost', jsonString, {
+                transformRequest: angular.identity,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(response){
+              if(response.data.success == "true"){
+                loadFeed();
+              }else{
+                if(response.data.success == "false"){
+                  console.log("failed to delete");
+                }
+              }
+          });
+        }
+      }
+
+      self.editPost = function (number){
+        if(self.username == self.globalfeed[number].name){
+          var temp = new Object();
+          temp.who = self.globalfeed[number].name;
+          temp.timestamp = self.globalfeed[number].pic.timestamp;
+          temp.newCaption = self.globalfeed[number].newCaption;
+          var jsonString = JSON.stringify(temp);
+          $http.post('/editPost', jsonString, {
+                transformRequest: angular.identity,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(response){
+              if(response.data.success == "true"){
+                loadFeed();
+              }else{
+                if(response.data.success == "false"){
+                  console.log("failed to edit post");
+                }
+              }
+          });
+        }
+      }
+
         
       
       
-      
-
-      // var loadnewsfeed = function() {
-      //   $http({
-      //   method: 'POST',
-      //   url:'/loadnewsfeed',
-      //   data: {"user": $rootScope.user}
-      // })
-      // .then(function(response) {
-      //   self.contactList = response.data;
-      //   });
-      // };
-      
-     // loadnewsfeed();
-/////////////////////////////////////////////////////////////////////////////////
-    
 
     }],
     bindings: {

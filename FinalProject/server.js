@@ -7,6 +7,7 @@ var db = mongojs('users', ['users']);//tells us what database we will be using
 var bodyParser = require('body-parser');
 var mkdirp = require('mkdirp');
 var async = require('async');
+var fs = require("fs");
 
 app.use(express.static(__dirname + "/public")); //static because we're telling the server to look for static files (html, css, js, image files)
 // app.use(express.static(__dirname + "/images"));
@@ -317,49 +318,7 @@ app.post('/getdms', function (req, res) {
  });
 
 
-// app.delete('/contactlist/:id', function (req, res) {
-//     var id = req.params.id;
-//     console.log(id);
-//     db.contactList.remove({_id: mongojs.ObjectId(id)}, function (err, doc) {
-//         res.json(doc);
-//     });
-// });
 
-/////////////////////////////////////////////////////////////////////////////////
-
-// app.post('/loadnewsfeed', uep, function (req, res) { //listens for post request from controller
-//     var info = getInfo(req.body.user);
-//     res.json(info);
-// });
-
-/////////////////////////////////////////////////////////////////////////////////
-
-
-
-// app.get('/globalnewsfeed/', function(req, res){
-//     console.log('received get request for global news feed');
-//     console.log(req.params);
-
-//         console.log('getall');
-//         db.users.find({private: false}, function(err,docs){
-//             if(err){
-//                 console.log(err);
-//             }
-//             // console.log('docs length: ', docs.length);
-//             var globalfeed = [];
-//             for(var i = 0; i<docs.length; i++){
-//                 // console.log(docs[i].username, ": and their pics: ", docs[i].pics);
-//                 var temp = {};
-//                 temp.username = docs[i].username;
-//                 temp.pics = docs[i].pics;
-//                 globalfeed.push(temp);
-//             }
-//             // console.log(globalfeed);
-//             res.json(globalfeed);
-//         })
-    
-
-// });
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -510,9 +469,9 @@ app.get('/globalnewsfeed/', function(req, res){
                 
                 found = true;
                 var feed = [];
+                following.push(req.query.username);
                 
-                
-                async.each(docs[0].following, function(item, callback){
+                async.each(following, function(item, callback){
                     
                     
                     db.users.find({username: item}, function (err, doc){
@@ -593,25 +552,248 @@ app.get('/globalnewsfeed/', function(req, res){
 
 app.post('/submitComment', function(req, res){
     console.log(req.body);
-    db.users.find({username: req.body.who}, function(err, docs){
+    db.users.findOne({username: req.body.who}, function(err, doc){
         if(err){
             console.log(err);
-        } else if(docs){
+        } else if(doc){
+            var count = 0;
+            var found = false;
+            var commentArray;
+            var picsArray = doc.pics;
+            for(var i=0; i<doc.pics.length; i++){
+              if(req.body.timestamp == doc.pics[i].timestamp){
+                found = true;
+                count = i;
+                commentArray = doc.pics[i].comments;
+                var temp = {};
+                temp.author = req.body.username;
+                temp.content = req.body.content;
+                commentArray.push(temp);
+                picsArray[i].comments = commentArray;
+                break;
+              }
+            }
 
-            // async.parallel([
-            //     function(callback) {
-            //         setTimeout(function() {
-            //             callback(null, 'one');
-            //         }, 200);
-            //     }
-            // ],
-            // // optional callback
-            // function(err, results) {
-            //     // the results array will equal ['one','two'] even though
-            //     // the second function had a shorter timeout.
-            // });
+
+            console.log("commentArray: ", commentArray, typeof(commentArray));
+            
+
+            
+
+            
+            console.log("async has yet to start so found will be true: ", found);
+
+            // db.user.findOne({_id:'123'},{friends:1}).lean().exec(function(err,user){
+            //    var whichArrayToUpdate;
+            //    for (var ii = 0; ii < user.friends.length; ii++) {
+            //         for (var jj = 0; i < user.friends[ii].emails; jj++) {
+            //             if(user.friends[ii].emails[jj].email == '1111' ){// update it below
+
+            //                 user.friends[ii].emails[jj].email == 'what ever you want to set to.';
+
+            //                 whichArrayToReplace = user.friends[ii].emails;
+            //                 break;
+            //             }
+            //         };
+            //    };
+
+            //    db.user.update({'friends.name':'allen'},{$set{'friends.$.email': whichArrayToReplace} })
+            // })
 
 
+
+            async.parallel([
+                function(callback) {
+                    db.users.update({username : req.body.who}, 
+                      {$set : {
+                             pics : picsArray
+                          }
+                      }, function(err, doc){
+                        if(err){
+                          console.log(err);
+                          return callback(err);
+                        }
+                        callback(null);
+                      }
+                    )
+                    
+                }
+            ],
+            // optional callback
+            function(err, results) {
+                if(err){
+                        console.log("parallel error message: ", err);
+                        res.json({success: "false", message:"Something went wrong try again"});
+                }else{
+                        console.log('parallel finished: ');
+                        res.json({success:"true", message:"successfully added comment"});
+                }
+            });
+
+
+
+
+
+        } else{
+            res.json({success: "false", message:"Something went wrong user not found"});
+        }
+    })
+});
+
+app.post('/like', function (req, res){
+    console.log(req.body);
+    var newlikes = req.body.likes + 1;
+    db.users.findOne({username: req.body.who}, function(err, doc){
+        if(err){
+            console.log(err);
+        } else if(doc){
+            var count = 0;
+            var found = false;
+            var picsArray = doc.pics;
+            for(var i=0; i<doc.pics.length; i++){
+              if(req.body.timestamp == doc.pics[i].timestamp){
+                found = true;
+                count = i;
+                picsArray[i].likes = newlikes;
+                break;
+              }
+            }
+
+            async.parallel([
+                function(callback) {
+                    db.users.update({username : req.body.who}, 
+                      {$set : {
+                             pics : picsArray
+                          }
+                      }, function(err, doc){
+                        if(err){
+                          console.log(err);
+                          return callback(err);
+                        }
+                        callback(null);
+                      }
+                    )
+                    
+                }
+            ],
+            // optional callback
+            function(err, results) {
+                if(err){
+                        console.log("parallel error message: ", err);
+                        res.json({success: "false", message:"Something went wrong try again"});
+                }else{
+                        console.log('parallel finished: ');
+                        res.json({success:"true", message:"successfully liked image", likes: newlikes});
+                }
+            });
+
+
+        } else{
+            res.json({success: "false", message:"Something went wrong user not found"});
+        }
+    })
+});
+
+app.post('/deletePost', function (req, res){
+    console.log(req.body);
+    db.users.findOne({username: req.body.who}, function(err, doc){
+        if(err){
+            console.log(err);
+        } else if(doc){
+            var count = 0;
+            var found = false;
+            var picsArray = doc.pics;
+            var deletePath = "public/";
+            for(var i=0; i<doc.pics.length; i++){
+              if(req.body.timestamp == doc.pics[i].timestamp){
+                found = true;
+                count = i;
+                deletePath = deletePath.concat(picsArray[i].filepath);
+                picsArray.splice(i, 1);
+                break;
+              }
+            }
+
+            async.parallel([
+                function(callback) {
+                    db.users.update({username : req.body.who}, 
+                      {$set : {
+                             pics : picsArray
+                          }
+                      }, function(err, doc){
+                        if(err){
+                          console.log(err);
+                          return callback(err);
+                        }
+                        callback(null);
+                      }
+                    )
+                    
+                }
+            ],
+            // optional callback
+            function(err, results) {
+                if(err){
+                        console.log("parallel error message: ", err);
+                        res.json({success: "false", message:"Something went wrong try again"});
+                }else{
+                        fs.unlink(deletePath);
+                        res.json({success:"true", message:"successfully deleted image"});
+                }
+            });
+
+
+        } else{
+            res.json({success: "false", message:"Something went wrong user not found"});
+        }
+    })
+});
+
+app.post('/editPost', function (req, res){
+    console.log(req.body);
+    db.users.findOne({username: req.body.who}, function(err, doc){
+        if(err){
+            console.log(err);
+        } else if(doc){
+            var count = 0;
+            var found = false;
+            var picsArray = doc.pics;
+            for(var i=0; i<doc.pics.length; i++){
+              if(req.body.timestamp == doc.pics[i].timestamp){
+                found = true;
+                count = i;
+                picsArray[i].caption = req.body.newCaption;
+                break;
+              }
+            }
+
+            async.parallel([
+                function(callback) {
+                    db.users.update({username : req.body.who}, 
+                      {$set : {
+                             pics : picsArray
+                          }
+                      }, function(err, doc){
+                        if(err){
+                          console.log(err);
+                          return callback(err);
+                        }
+                        callback(null);
+                      }
+                    )
+                    
+                }
+            ],
+            // optional callback
+            function(err, results) {
+                if(err){
+                        console.log("parallel error message: ", err);
+                        res.json({success: "false", message:"Something went wrong try again"});
+                }else{
+                        
+                        res.json({success:"true", message:"successfully edited caption"});
+                }
+            });
 
 
         } else{
@@ -689,6 +871,8 @@ app.post('/changeinfo', function(req, res){
   }
   
 });
+
+
 
 function getInfo(user) {
       //this is where u should query the database for teh info you need

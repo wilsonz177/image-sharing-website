@@ -7,9 +7,9 @@ angular.
     templateUrl: 'login/log-in.template.html',
     controller: ['$http', '$scope', '$location', '$rootScope', '$cookies', function LoginController($http, $scope, $location, $rootScope, $cookies) {
       var self = this;
-
+      console.log("cookies username:", $cookies.get("username"));
 /////////////////////////////////////////////////////////////////////////////////
-
+    
     self.login = function() {
         var o = new Object();
         o.username = self.user.username;
