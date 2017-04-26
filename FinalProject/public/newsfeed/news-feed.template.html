@@ -5,7 +5,7 @@
                 {{$ctrl.message}}
             </div>
             </div>
-
+            <input type="text" ng-model="search">
             <table class="table">
                 <thead>
                     <tr>
@@ -27,7 +27,7 @@
                         <td>posted {{post.pic.timestamp | date:"MM/dd/yyyy 'at' h:mma"}}</td>
                         <td>
                             <ul ng-repeat="comment in post.pic.comments">
-                                <li>{{comment.author}}: "{{comment.content}}"</li>
+                                <li><strong>{{comment.author}}:</strong> "{{comment.content}}"</li>
                             </ul>
                         </td>
                         <td>
@@ -36,8 +36,11 @@
                             <label>type your comment:<input type="text" class="form-control" ng-model="post.commentToSubmit" ></label>
                             <button type="button" class="btn btn-info"  ng-click="$ctrl.submitComment(post.num)">Submit your Comment</button>
                             </div>
+                            <div ng-show="post.owner">
                             <button type="button" class="btn btn-success">Edit post</button>
                             <button type="button" class="btn btn-warning">Delete Post</button>
+                            </div>
+                            <button type="button" class="btn btn-primary" ng-click="$ctrl.like(post.num)">Like</button>
                         </td>
                         <!-- <td>{{post.pic.timestamp | date:'yyyy-MM-dd HH:mm:ss Z'}}</td> -->
 

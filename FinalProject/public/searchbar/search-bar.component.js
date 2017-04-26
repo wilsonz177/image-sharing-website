@@ -7,10 +7,10 @@ angular.
     controller: ['$scope', '$http', '$routeParams', '$location', '$cookies', function searchBarController($scope, $http, $routeParams, $location, $cookies) {
       var self = this;
       var user = $cookies.get("username");
-       console.log("the cookies name is ", user);
-       console.log("in searchbar controller");
+       // console.log("the cookies name is ", user);
+       // console.log("in searchbar controller");
       var getUsersAndFollowRequests = function(){
- console.log("in getusersandfollowrequests");
+ // console.log("in getusersandfollowrequests");
         $http({
         method: 'POST',
         url:'/usersandfollowrequests',
@@ -19,8 +19,8 @@ angular.
       .then(function(response) {
           self.allusers = response.data.allusers;
           self.requests = response.data.requests;
-           console.log("these are all the users", response.data.users);
-          console.log("these are all the requests", response.data.requests);
+          //  console.log("these are all the users", response.data.users);
+          // console.log("these are all the requests", response.data.requests);
         });
       };
       
@@ -36,7 +36,7 @@ angular.
       
       
       $scope.acceptRequest = function(request){
-          console.log("in the sccept request unction");
+          // console.log("in the sccept request unction");
         $http({
         method: 'POST',
         url:'/follow',

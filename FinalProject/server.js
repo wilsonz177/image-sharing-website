@@ -430,9 +430,9 @@ app.get('/globalnewsfeed/', function(req, res){
                 
                 found = true;
                 var feed = [];
+                following.push(req.query.username);
                 
-                
-                async.each(docs[0].following, function(item, callback){
+                async.each(following, function(item, callback){
                     
                     
                     db.users.find({username: item}, function (err, doc){
@@ -600,6 +600,73 @@ app.post('/submitComment', function(req, res){
         }
     })
 });
+
+app.post('/like', function (req, res){
+    console.log(req.body);
+    var newlikes = req.body.likes + 1;
+    db.users.findOne({username: req.body.who}, function(err, doc){
+        if(err){
+            console.log(err);
+        } else if(doc){
+            var count = 0;
+            var found = false;
+            var picsArray = doc.pics;
+            for(var i=0; i<doc.pics.length; i++){
+              if(req.body.timestamp == doc.pics[i].timestamp){
+                found = true;
+                count = i;
+                picsArray[i].likes = newlikes;
+                break;
+              }
+            }
+
+
+            
+
+            
+            console.log("async has yet to start so found will be true: ", found);
+
+            
+
+
+            async.parallel([
+                function(callback) {
+                    db.users.update({username : req.body.who}, 
+                      {$set : {
+                             pics : picsArray
+                          }
+                      }, function(err, doc){
+                        if(err){
+                          console.log(err);
+                          return callback(err);
+                        }
+                        callback(null);
+                      }
+                    )
+                    
+                }
+            ],
+            // optional callback
+            function(err, results) {
+                if(err){
+                        console.log("parallel error message: ", err);
+                        res.json({success: "false", message:"Something went wrong try again"});
+                }else{
+                        console.log('parallel finished: ');
+                        res.json({success:"true", message:"successfully liked image", likes: newlikes});
+                }
+            });
+
+
+
+
+
+        } else{
+            res.json({success: "false", message:"Something went wrong user not found"});
+        }
+    })
+});
+
 
 function getInfo(user) {
       //this is where u should query the database for teh info you need
