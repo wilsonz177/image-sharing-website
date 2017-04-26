@@ -7,7 +7,7 @@
 #User profiles contain an email, biography, list of followers/ following 10 pts
 #Able to upload and view posts 10 pts
 #Posts contain image(s), captions and comments 10 pts
-#Can add and delete posts 10 pts
+#Can add comments to posts 10 pts
 #Able to access a global news feed, where everyone's public posts are shown 10 pts
 #All newsfeed/posts/comments are ordered by date 5pts
 #Creative Portion 20 pts
