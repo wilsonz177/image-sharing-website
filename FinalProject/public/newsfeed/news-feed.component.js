@@ -20,18 +20,25 @@ angular.
       var loadFeed = function(){
         self.globalfeed = [];
         if(location[1] == "home"){
+          self.titleShow = true;
+          self.title = "Home Page";
+          self.description ="posts only by people you're following";
           console.log("you're at home");
           $http.get('/globalnewsfeed/?get=following&username='+ self.username).then(function(response){
               callback(response);
           });
         }
         if(location[1] == "viewuser"){
+          self.titleShow = false;
           console.log("youre at view user: ", location[2]);
           $http.get('/globalnewsfeed/?get=individual&username='+ self.username + '&who=' + location[2]).then(function(response){
                 callback(response);
           });
         }
         if(location[1] == "newsfeed"){
+          self.titleShow = true;
+          self.title = "Public News Feed";
+          self.description = "everyone's public posts are shown here"
           console.log("you're at newfeed");
           $http.get('/globalnewsfeed/?get=all').then(function(response){
                 callback(response);
@@ -105,6 +112,7 @@ angular.
             for(var i=0; i<self.globalfeed.length; i++){
               self.globalfeed[i].num  = i;
               self.globalfeed[i].addComment = false;
+              self.globalfeed[i].editCaption = false;
               if(self.globalfeed[i].name == self.username){
                 self.globalfeed[i].owner = true;
               }else{
@@ -126,6 +134,10 @@ angular.
         self.globalfeed[number].addComment = !(self.globalfeed[number].addComment);
       };
 
+      self.showEditCaption = function(number){
+        self.globalfeed[number].editCaption = !(self.globalfeed[number].editCaption);
+      }
+
 
       self.submitComment = function(number){
         console.log("comment to be submitted: ", self.globalfeed[number].commentToSubmit);
@@ -141,7 +153,7 @@ angular.
               headers: { 'Content-Type': 'application/json' }
           }).then(function(response){
             if(response.data.success == "true"){
-
+              self.globalfeed[number].commentToSubmit = null;
               loadFeed();
             }else{
               if(response.data.success == "false"){
@@ -192,6 +204,29 @@ angular.
           });
         }
       }
+
+      self.editPost = function (number){
+        if(self.username == self.globalfeed[number].name){
+          var temp = new Object();
+          temp.who = self.globalfeed[number].name;
+          temp.timestamp = self.globalfeed[number].pic.timestamp;
+          temp.newCaption = self.globalfeed[number].newCaption;
+          var jsonString = JSON.stringify(temp);
+          $http.post('/editPost', jsonString, {
+                transformRequest: angular.identity,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(response){
+              if(response.data.success == "true"){
+                loadFeed();
+              }else{
+                if(response.data.success == "false"){
+                  console.log("failed to edit post");
+                }
+              }
+          });
+        }
+      }
+
         
       
       

@@ -5,7 +5,11 @@
                 {{$ctrl.message}}
             </div>
             </div>
-            <input type="text" ng-model="search">
+            <div ng-show="$ctrl.titleShow">
+            <h2>{{$ctrl.title}}</h2>
+            <h4>{{$ctrl.description}}</h4>
+            </div>
+            <label>Filter Feed: <input type="text" ng-model="search"><label>
             <table class="table">
                 <thead>
                     <tr>
@@ -37,7 +41,14 @@
                             <button type="button" class="btn btn-info"  ng-click="$ctrl.submitComment(post.num)">Submit your Comment</button>
                             </div>
                             <div ng-show="post.owner">
-                            <button type="button" class="btn btn-success">Edit post</button>
+
+                            <button type="button" class="btn btn-success" ng-click="$ctrl.showEditCaption(post.num)">Edit caption</button>
+                            
+                           
+                            <div  class="form-group" ng-show="post.editCaption">
+                            <label>type your new caption:<input type="text" class="form-control" ng-model="post.newCaption" ></label>
+                            <button type="button" class="btn btn-info"  ng-click="$ctrl.editPost(post.num)">Submit your new caption</button>
+                            </div>
                             <button type="button" class="btn btn-warning" ng-click="$ctrl.deletePost(post.num)">Delete Post</button>
                             </div>
                             <button type="button" class="btn btn-primary" ng-click="$ctrl.like(post.num)">Like</button>
