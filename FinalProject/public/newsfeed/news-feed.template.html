@@ -27,7 +27,7 @@
                         <td>posted {{post.pic.timestamp | date:"MM/dd/yyyy 'at' h:mma"}}</td>
                         <td>
                             <ul ng-repeat="comment in post.pic.comments">
-                                <li>{{comment.username}}: "{{comment.content}}"</li>
+                                <li>{{comment.author}}: "{{comment.content}}"</li>
                             </ul>
                         </td>
                         <td>

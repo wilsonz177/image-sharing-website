@@ -513,23 +513,84 @@ app.get('/globalnewsfeed/', function(req, res){
 
 app.post('/submitComment', function(req, res){
     console.log(req.body);
-    db.users.find({username: req.body.who}, function(err, docs){
+    db.users.findOne({username: req.body.who}, function(err, doc){
         if(err){
             console.log(err);
-        } else if(docs){
+        } else if(doc){
+            var count = 0;
+            var found = false;
+            var commentArray;
+            var picsArray = doc.pics;
+            for(var i=0; i<doc.pics.length; i++){
+              if(req.body.timestamp == doc.pics[i].timestamp){
+                found = true;
+                count = i;
+                commentArray = doc.pics[i].comments;
+                var temp = {};
+                temp.author = req.body.username;
+                temp.content = req.body.content;
+                commentArray.push(temp);
+                picsArray[i].comments = commentArray;
+                break;
+              }
+            }
 
-            // async.parallel([
-            //     function(callback) {
-            //         setTimeout(function() {
-            //             callback(null, 'one');
-            //         }, 200);
-            //     }
-            // ],
-            // // optional callback
-            // function(err, results) {
-            //     // the results array will equal ['one','two'] even though
-            //     // the second function had a shorter timeout.
-            // });
+
+            console.log("commentArray: ", commentArray, typeof(commentArray));
+            
+
+            
+
+            
+            console.log("async has yet to start so found will be true: ", found);
+
+            // db.user.findOne({_id:'123'},{friends:1}).lean().exec(function(err,user){
+            //    var whichArrayToUpdate;
+            //    for (var ii = 0; ii < user.friends.length; ii++) {
+            //         for (var jj = 0; i < user.friends[ii].emails; jj++) {
+            //             if(user.friends[ii].emails[jj].email == '1111' ){// update it below
+
+            //                 user.friends[ii].emails[jj].email == 'what ever you want to set to.';
+
+            //                 whichArrayToReplace = user.friends[ii].emails;
+            //                 break;
+            //             }
+            //         };
+            //    };
+
+            //    db.user.update({'friends.name':'allen'},{$set{'friends.$.email': whichArrayToReplace} })
+            // })
+
+
+
+            async.parallel([
+                function(callback) {
+                    db.users.update({username : req.body.who}, 
+                      {$set : {
+                             pics : picsArray
+                          }
+                      }, function(err, doc){
+                        if(err){
+                          console.log(err);
+                          return callback(err);
+                        }
+                        callback(null);
+                      }
+                    )
+                    
+                }
+            ],
+            // optional callback
+            function(err, results) {
+                if(err){
+                        console.log("parallel error message: ", err);
+                        res.json({success: "false", message:"Something went wrong try again"});
+                }else{
+                        console.log('parallel finished: ');
+                        res.json({success:"true", message:"successfully added comment"});
+                }
+            });
+
 
 
 
