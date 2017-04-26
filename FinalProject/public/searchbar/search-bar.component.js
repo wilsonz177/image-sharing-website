@@ -7,10 +7,11 @@ angular.
     controller: ['$scope', '$http', '$routeParams', '$location', '$cookies', function searchBarController($scope, $http, $routeParams, $location, $cookies) {
       var self = this;
       var user = $cookies.get("username");
-       // console.log("the cookies name is ", user);
-       // console.log("in searchbar controller");
+      
+/////////////////////////////////////////////////////////////////////////////////
+      
       var getUsersAndFollowRequests = function(){
- // console.log("in getusersandfollowrequests");
+
         $http({
         method: 'POST',
         url:'/usersandfollowrequests',
@@ -19,19 +20,23 @@ angular.
       .then(function(response) {
           self.allusers = response.data.allusers;
           self.requests = response.data.requests;
-          //  console.log("these are all the users", response.data.users);
-          // console.log("these are all the requests", response.data.requests);
+          console.log("these are the requests: ", self.requests);
+          self.people = response.data.dmpeople;
         });
       };
       
       getUsersAndFollowRequests(); //gets an array of allusers that the search bar can look through
 
+/////////////////////////////////////////////////////////////////////////////////
+
       $scope.openPrivateMessages = function(person){
-          $cookies.put("seconduser", person);
+          $cookies.put("seconduserfromnavbar", person);
           var path = '/privatemessages/' + person;
           $location.path(path);
       };
 
+///////////////////////////////////////////////////////////////////////////////// 
+      
       $scope.onSelect = function ($item, $model, $label) {
           $scope.$item = $item;
           $scope.$model = $model;
@@ -40,9 +45,9 @@ angular.
           $location.path(path);
       };
       
+/////////////////////////////////////////////////////////////////////////////////
       
       $scope.acceptRequest = function(request){
-          // console.log("in the sccept request unction");
         $http({
         method: 'POST',
         url:'/follow',
@@ -53,10 +58,14 @@ angular.
         });
       };
 
+/////////////////////////////////////////////////////////////////////////////////  
+      
       self.logout = function(){
         $cookies.remove("username");
+        $cookies.remove("seconduserfromnavbar");
+        $cookies.remove("seconduser");
         $location.path('/login');
-      }
+      };
       
     }]
 });

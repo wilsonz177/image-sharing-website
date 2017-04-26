@@ -10,14 +10,10 @@ var async = require('async');
 var fs = require("fs");
 
 app.use(express.static(__dirname + "/public")); //static because we're telling the server to look for static files (html, css, js, image files)
-// app.use(express.static(__dirname + "/images"));
-// app.use(express.static(__dirname +"/img"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); //now the server can parse the data it's being sent from the controller
 
 var multer = require('multer');
-// var morgan = require('morgan'); // Import Morgan Package
-// var mongoose = require('mongoose'); // HTTP request logger middleware for Node.js
 var path = require('path'); // Import path module
 
 var username = "kyle";
@@ -46,18 +42,9 @@ var upload = multer({
     limits : {fileSize : 100000000}
 }).single('myfile');
 
-// mongoose.connect('mongodb://127.0.0.1:27017/multerTest', function(err) {
-//     if (err) {
-//         console.log('Not connected to the database: ' + err); // Log to console if unable to connect to database
-//     } else {
-//         console.log('Successfully connected to MongoDB'); // Log to console if able to connect to database
-//     }
-// });
-
-
+/////////////////////////////////////////////////////////////////////////////////
 
 app.post('/upload', function (req, res) {
-    
   upload(req, res, function (err) {
     var myfilepath = req.file.path.substring(6,req.file.path.length);
     if (err) {
@@ -69,7 +56,6 @@ app.post('/upload', function (req, res) {
         console.log(err);
         res.json({success: false, message: "file was not able to be uploaded"});
       }
-      return
     }else{
         if(!req.file){
             res.json({success: false, message: "No file was selected"});
@@ -79,7 +65,7 @@ app.post('/upload', function (req, res) {
             query['username'] = username;
             
             var d = new Date();
-            
+   
             db.users.update(
                    {username: username},
                    {$push : {
@@ -94,30 +80,24 @@ app.post('/upload', function (req, res) {
                           }
                     }
             );
-
-
         }
     }
-
-    
   });
 });
 
 /////////////////////////////////////////////////////////////////////////////////
 
-
 app.post('/uploadCaption', function (req, res) {
     myCaption = req.body.caption;
     username = req.body.username;
-    res.json({message: "what the fuck is up", success: true});
+    res.json({message: "uploaded", success: true});
 });
 
 /////////////////////////////////////////////////////////////////////////////////
 
 app.post('/addComment', function(req, res){
-    res.json({message: "add comment shit", success: true});
+    res.json({message: "add comment stuff", success: true});
 });
-
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -131,13 +111,27 @@ app.get('/getProfile/:username', function(req,res){
     
 });
 
-
 /////////////////////////////////////////////////////////////////////////////////
 
 app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
-    username = req.body.username;
+    var username = req.body.username;
     var pass = req.body.password;
+    var notauser = true;
     
+    db.users.find(function(err, docs){
+        for(var i = 0; i<docs.length; i++){
+          console.log("here is the doc username: ", docs[i].username);
+          console.log("here is the real username: ", username);
+          if (username == docs[i].username){
+            console.log("match");
+            notauser = false;
+          }
+      }
+    });
+    
+    setTimeout(function(){  
+          
+    if (notauser === false){
     db.users.find({username: req.body.username}, function(err, docs){
         if(docs[0].password == pass){
             res.json({"username" : req.body.username, "_id" : req.body._id});
@@ -145,68 +139,47 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
             console.log('incorrect password/username');
         }
     });
-
-   //  db.users.find(function (err, docs) { //docs is the actual data from the server
-      
+    }
     
-
-   //      for (var index in docs) {
-   //          for (var key in docs[index]){
-   //              if (key == user){
-   //                  if (pass == docs[index][key].info.password){
-   //                      console.log("password match");
-   //                      res.json({"username": req.body.username, "_id": req.body._id});
-   //                  }
-   //              } else {
-   //                  console.log("username/password incorrect"); //create error message
-   //              }
-   //          }
-   //      }
-   // });
+  }, 500);
 });
 
 /////////////////////////////////////////////////////////////////////////////////
 
 app.post('/usersandfollowrequests', function (req, res) {
-  
-            var allusers = [];
-            var requests = [];
-            var dmpeople = [];
-            db.users.find(function(err,docs){
-            if(err){
-                console.log(err);
-            }
+    var allusers = [];
+    var requests = [];
+    var dmpeople = [];
+    db.users.find(function(err,docs){
+      if(err){
+          console.log(err);
+      }
             
-            for(var i = 0; i<docs.length; i++){
-                allusers.push(docs[i].username);
-            }
+      for(var i = 0; i<docs.length; i++){
+          allusers.push(docs[i].username);
+      }
             
-            console.log("the user loggin in is *****", req.body.user);
-            db.users.find({username: req.body.user}, function(err,docs){
-            if(err){
-                console.log(err);
-            }
-            for (var key in docs[0].dms) {
-                  dmpeople.push(key);
-                  console.log("this is dmpeople from server: ", dmpeople);
-                }
-             });
-            requests = docs[0].followRequests;
-             console.log("the requests array is: ", requests);
-             setTimeout(function(){  
-                res.json({"allusers": allusers, "requests": requests, "dmpeople": dmpeople});
-             }, 1000);
+      db.users.find({username: req.body.user}, function(err,docs){
+      if(err){
+          console.log(err);
+      }
+      for (var key in docs[0].dms) {
+            dmpeople.push(key);
+          }
+          requests = docs[0].followRequests;
         });
-            
-            
-            
-        });
-
-
+      
+      
+      console.log("server side follow requests", requests);
+      setTimeout(function(){  
+          res.json({"allusers": allusers, "requests": requests, "dmpeople": dmpeople});
+        }, 1000);
+  });
+});
 
 /////////////////////////////////////////////////////////////////////////////////
 
-app.post('/adduser', function (req, res) { //listens for post request from controller
+app.post('/adduser', function (req, res) { 
 
     var newEntry = req.body;
     if(req.body.private === "private"){
@@ -222,11 +195,6 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
     newEntry.sentRequests = [];
     username = req.body.username;
     newEntry.dms = {};
-    //var newEntry = {};
-    //var username = req.body.username;
-    //newEntry[username] = {"info": req.body, "pics":{}, "newsfeed":{}};
-    //newEntry[username].info.followers = [];
-    //newEntry[username].info.following = [];
     
     db.users.insert(newEntry, function(err, doc) { //inserts into database
         res.json({"username": doc.username, "_id": doc._id});
@@ -247,114 +215,93 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 });
 
 /////////////////////////////////////////////////////////////////////////////////
- app.post('/dm', function (req, res) {
- console.log("bout to start dm stuff from server side");
- console.log("this is who is sending the dm: ", req.body.firstuser);
-  console.log("this is who is receiving the dm: ", req.body.seconduser);
-  console.log("this is the message: ", req.body.message);
 
- var message = req.body.message;
- var messages = [];
- var people = [];
-             db.users.find({username: req.body.firstuser},function(err,docs){ 
+ app.post('/dm', function (req, res) {
+
+    var message = req.body.message;
+    var messages = [];
+    var people = [];
+    db.users.find({username: req.body.firstuser},function(err,docs){ 
                 
-                for (var key in docs[0].dms) {
-                   if (key == req.body.seconduser) {
-                    console.log("this isnt the first message");
-                    
-                    for(var i=0; i<docs[0].dms[key].length; i++){
+        for (var key in docs[0].dms) {
+            if (key == req.body.seconduser) {
+                  for(var i=0; i<docs[0].dms[key].length; i++){
                       messages.push(docs[0].dms[key][i]);
-                      console.log("THE MESSAGES: ", messages);
                     }
-                   }
+                  }
                 }
- 
              });
              
-setTimeout(function(){      
-             messages.push(message);
+    setTimeout(function(){      
+        messages.push(message);
  
- console.log("these are all the messages", messages);
-var placeholderone = {};
-placeholderone['dms.' + req.body.seconduser] = messages;
-
-var placeholdertwo = {};
-placeholdertwo['dms.' + req.body.firstuser] = messages;
+        var placeholderone = {};
+        placeholderone['dms.' + req.body.seconduser] = messages;
+        var placeholdertwo = {};
+        placeholdertwo['dms.' + req.body.firstuser] = messages;
  
-            db.users.update({username: req.body.firstuser},
-      
-                   {"$set" :  placeholderone}
-            );
+        db.users.update({username: req.body.firstuser},
+              {"$set" :  placeholderone}
+        );
             
-            db.users.update({username: req.body.seconduser},
-      
-                   {"$set" :  placeholdertwo}
-            );
+        db.users.update({username: req.body.seconduser},
+              {"$set" :  placeholdertwo}
+        );
             
-            res.json(messages);
-        }, 1000);  
+        res.json(messages);
+    }, 500);  
  });
  
+/////////////////////////////////////////////////////////////////////////////////
  
 app.post('/getdms', function (req, res) {
  
- var messages = [];
-             db.users.find({username: req.body.firstuser},function(err,docs){ 
-                
-                for (var key in docs[0].dms) {
-                   if (key == req.body.seconduser) {
-                    
+    var messages = [];
+    db.users.find({username: req.body.firstuser},function(err,docs){           
+        for (var key in docs[0].dms) {
+            if (key == req.body.seconduser) {
                     for(var i=0; i<docs[0].dms[key].length; i++){
                       messages.push(docs[0].dms[key][i]);
                     }        
-                   }
+                  }
                 }
- 
              });
-             setTimeout(function(){ 
-                  res.json({"messages": messages});
-             }, 1000);  
+    
+    setTimeout(function(){ 
+        res.json({"messages": messages});
+    }, 500);  
             
  });
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////
 
 app.post('/follow', function(req, res){
-  var userloggedin = req.body.loggedinuser;
-  var seconduser = req.body.userbeingfollowedorunfollowed;
-  var action = req.body.action;
-  var priv = false;
-  var requests = [];
+    var userloggedin = req.body.loggedinuser;
+    var seconduser = req.body.userbeingfollowedorunfollowed;
+    var action = req.body.action;
+    var priv = false;
+    var requests = [];
+
+    if (action == "follow"){
   
-  
-  if (action == "follow"){
-  
-          db.users.find({username: seconduser}, function(err,docs){
-            if(err){
-                console.log(err);
-            }
-            priv = docs[0].private;
-            console.log("private or nawh?", priv);
+        db.users.find({username: seconduser}, function(err,docs){
+          if(err){
+              console.log(err);
+          }
+          priv = docs[0].private;
        
-          
           if (priv === false) {
-            
-             console.log("the profile is public?????");
-              db.users.update(
-                   {username: userloggedin},
+
+            db.users.update(
+                  {username: userloggedin},
                    {$push : {
                              following : seconduser
                           }
                     }
             );
               
-              db.users.update(
-                   {username: seconduser},
+            db.users.update(
+                  {username: seconduser},
                    {$push : {
                              followers : userloggedin
                           }
@@ -363,20 +310,19 @@ app.post('/follow', function(req, res){
             res.json({"username": seconduser});
           } else {
             db.users.update(
-                   {username: seconduser},
+                  {username: seconduser},
                    {$push : {
                              followRequests : userloggedin
                           }
-                    }
-                    
+                    }    
             );
+            
             db.users.update(
-                   {username: userloggedin},
+                  {username: userloggedin},
                    {$push : {
                              sentRequests : seconduser
                           }
                     }
-                    
             );
             
             setTimeout(function(){ res.json(docs); }, 1000);
@@ -404,23 +350,23 @@ app.post('/follow', function(req, res){
           { $pull: { sentRequests: userloggedin } }
       );
         
-            db.users.find({username: userloggedin}, function(err,docs){ //get updated list of requests
-            if(err){
-                console.log(err);
-            }
-            requests = docs[0].followRequests;
-            });
+        db.users.find({username: userloggedin}, function(err,docs){ //get updated list of requests
+          if(err){
+              console.log(err);
+          }
+          requests = docs[0].followRequests;
+          });
         
-              db.users.update( //update the users followers
-                   {username: userloggedin},
+        db.users.update( //update the users followers
+              {username: userloggedin},
                    {$push : {
                              followers : seconduser
                           }
                     }
             );
       
-                   db.users.update( //update the requests following
-                   {username: seconduser},
+        db.users.update( //update the requests following
+                {username: seconduser},
                    {$push : {
                              following : userloggedin
                           }
@@ -434,28 +380,21 @@ app.post('/follow', function(req, res){
 /////////////////////////////////////////////////////////////////////////////
 
 app.get('/globalnewsfeed/', function(req, res){
-    console.log('received get request for global news feed');
-    console.log('my req.query: ', req.query);
     if(req.query.get == "all"){
-        console.log('getall');
         db.users.find({private: false}, function(err,docs){
             if(err){
                 console.log(err);
             }
-            // console.log('docs length: ', docs.length);
             var globalfeed = [];
             for(var i = 0; i<docs.length; i++){
-                // console.log(docs[i].username, ": and their pics: ", docs[i].pics);
                 var temp = {};
                 temp.username = docs[i].username;
                 temp.pics = docs[i].pics;
                 globalfeed.push(temp);
             }
-            // console.log(globalfeed);
             res.json(globalfeed);
         });
     }else if(req.query.get == "following"){
-        console.log('getfollowing');
         var following;
         var found = false;
         var feed = [];
@@ -545,10 +484,9 @@ app.get('/globalnewsfeed/', function(req, res){
             }
         })
     }
-    
-
 });
 
+/////////////////////////////////////////////////////////////////////////////////
 
 app.post('/submitComment', function(req, res){
     console.log(req.body);
@@ -574,33 +512,8 @@ app.post('/submitComment', function(req, res){
               }
             }
 
-
             console.log("commentArray: ", commentArray, typeof(commentArray));
-            
-
-            
-
-            
             console.log("async has yet to start so found will be true: ", found);
-
-            // db.user.findOne({_id:'123'},{friends:1}).lean().exec(function(err,user){
-            //    var whichArrayToUpdate;
-            //    for (var ii = 0; ii < user.friends.length; ii++) {
-            //         for (var jj = 0; i < user.friends[ii].emails; jj++) {
-            //             if(user.friends[ii].emails[jj].email == '1111' ){// update it below
-
-            //                 user.friends[ii].emails[jj].email == 'what ever you want to set to.';
-
-            //                 whichArrayToReplace = user.friends[ii].emails;
-            //                 break;
-            //             }
-            //         };
-            //    };
-
-            //    db.user.update({'friends.name':'allen'},{$set{'friends.$.email': whichArrayToReplace} })
-            // })
-
-
 
             async.parallel([
                 function(callback) {
@@ -615,7 +528,7 @@ app.post('/submitComment', function(req, res){
                         }
                         callback(null);
                       }
-                    )
+                    );
                     
                 }
             ],
@@ -630,15 +543,13 @@ app.post('/submitComment', function(req, res){
                 }
             });
 
-
-
-
-
         } else{
             res.json({success: "false", message:"Something went wrong user not found"});
         }
-    })
+    });
 });
+
+/////////////////////////////////////////////////////////////////////////////////
 
 app.post('/like', function (req, res){
     console.log(req.body);
@@ -672,7 +583,7 @@ app.post('/like', function (req, res){
                         }
                         callback(null);
                       }
-                    )
+                    );
                     
                 }
             ],
@@ -691,11 +602,12 @@ app.post('/like', function (req, res){
         } else{
             res.json({success: "false", message:"Something went wrong user not found"});
         }
-    })
+    });
 });
 
+/////////////////////////////////////////////////////////////////////////////////
+
 app.post('/deletePost', function (req, res){
-    console.log(req.body);
     db.users.findOne({username: req.body.who}, function(err, doc){
         if(err){
             console.log(err);
@@ -727,7 +639,7 @@ app.post('/deletePost', function (req, res){
                         }
                         callback(null);
                       }
-                    )
+                    );
                     
                 }
             ],
@@ -746,8 +658,10 @@ app.post('/deletePost', function (req, res){
         } else{
             res.json({success: "false", message:"Something went wrong user not found"});
         }
-    })
+    });
 });
+
+/////////////////////////////////////////////////////////////////////////////////
 
 app.post('/editPost', function (req, res){
     console.log(req.body);
@@ -780,7 +694,7 @@ app.post('/editPost', function (req, res){
                         }
                         callback(null);
                       }
-                    )
+                    );
                     
                 }
             ],
@@ -802,16 +716,13 @@ app.post('/editPost', function (req, res){
     });
 });
 
+/////////////////////////////////////////////////////////////////////////////////
 
 app.post('/changeinfo', function(req, res){
   
-  console.log("server side user is: ", req.body.user)
-  console.log("server side change info. here is the tpye of change: ", req.body.typeofrequest);
-  console.log("server side change info. here is the value: ", req.body.value);
-  
   if (req.body.typeofrequest == "changepassword"){
     console.log("updating password");
-    db.users.update( //update the users followers
+    db.users.update( 
                    {username: req.body.user},
                    {$set : {
                              password : req.body.value
@@ -821,7 +732,7 @@ app.post('/changeinfo', function(req, res){
   }
 
     if (req.body.typeofrequest == "changefirstname"){
-    db.users.update( //update the users followers
+    db.users.update(
                    {username: req.body.user},
                    {$set : {
                              firstname : req.body.value
@@ -831,7 +742,7 @@ app.post('/changeinfo', function(req, res){
   }
   
     if (req.body.typeofrequest == "changelastname"){
-    db.users.update( //update the users followers
+    db.users.update( 
                    {username: req.body.user},
                    {$set : {
                              lastname : req.body.value
@@ -841,7 +752,7 @@ app.post('/changeinfo', function(req, res){
   }
   
     if (req.body.typeofrequest == "changebio"){
-    db.users.update( //update the users followers
+    db.users.update(
                    {username: req.body.user},
                    {$set : {
                              bio : req.body.value
@@ -851,7 +762,7 @@ app.post('/changeinfo', function(req, res){
   }
   
     if (req.body.typeofrequest == "changeemail"){
-    db.users.update( //update the users followers
+    db.users.update( 
                    {username: req.body.user},
                    {$set : {
                              email : req.body.value
@@ -861,7 +772,7 @@ app.post('/changeinfo', function(req, res){
   }
   
     if (req.body.typeofrequest == "changeprivate"){
-    db.users.update( //update the users followers
+    db.users.update(
                    {username: req.body.user},
                    {$set : {
                              private : req.body.value
@@ -872,11 +783,9 @@ app.post('/changeinfo', function(req, res){
   
 });
 
-
+/////////////////////////////////////////////////////////////////////////////////
 
 function getInfo(user) {
-      //this is where u should query the database for teh info you need
-      //var info = db.users.find({"username": user}); this doesnt work
       return db.users.find({"username": user});
 }
 app.listen(3000); //listening on port 3000

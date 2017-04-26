@@ -7,7 +7,7 @@ angular.
     templateUrl: 'login/log-in.template.html',
     controller: ['$http', '$scope', '$location', '$rootScope', '$cookies', function LoginController($http, $scope, $location, $rootScope, $cookies) {
       var self = this;
-      console.log("cookies username:", $cookies.get("username"));
+
 /////////////////////////////////////////////////////////////////////////////////
     
     self.login = function() {
@@ -24,7 +24,6 @@ angular.
             $rootScope._id = response.data._id;
             $cookies.put("username", response.data.username);
             $cookies.put("id", response.data._id);
-            console.log(response.data);
             var path = '/home';
             $location.path(path);
         });
@@ -33,7 +32,6 @@ angular.
 /////////////////////////////////////////////////////////////////////////////////
     
     self.adduser = function() {
-        console.log("in the adduser function");
         $http({
         method: 'POST',
         url:'/adduser',

@@ -8,13 +8,13 @@ angular.
       var self = this;
       var user = $cookies.get("username");
       
+/////////////////////////////////////////////////////////////////////////////////     
+      
     $scope.changeprofiletype = function(value) {
-         console.log("the value is: ", value);
         var priv = true;
-       if (value == "public"){
-        console.log("just changed a private profile to public");
+        if (value == "public"){
             priv = false;
-       }
+        }
        
         $http({
         method: 'POST',
@@ -24,12 +24,12 @@ angular.
       .then(function(response) {
             
         });
-       
     };
-        
 
-      $scope.change = function(newValue, typeOfRequest){
-          console.log("in the change function");
+/////////////////////////////////////////////////////////////////////////////////
+
+    $scope.change = function(newValue, typeOfRequest){
+
         $http({
         method: 'POST',
         url:'/changeinfo',
@@ -38,7 +38,6 @@ angular.
       .then(function(response) {
             
         });
-      };
-      
+      };  
     }]
 });

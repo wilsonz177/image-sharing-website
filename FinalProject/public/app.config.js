@@ -15,9 +15,6 @@ angular.
          when('/newsfeed', {
            template: '<search-bar></search-bar><news-feed></news-feed>'
         }).
-        //  when('/details/:id', {
-        //    template: '<detailed-view></detailed-view>'
-        // }).
          when('/addcomment', {
             template: '<search-bar></search-bar><add-comment></add-comment>'
          }).
@@ -36,10 +33,3 @@ angular.
         otherwise('/login');
     }
   ]);
-
-// angular.
-//   module('instaBam').
-//   controller('appCtrl', function($scope){
-//     $scope.key = {}
-//     $scope.key.stuff = "folllowing";
-//   })

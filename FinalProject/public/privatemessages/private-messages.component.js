@@ -7,11 +7,10 @@ angular.
     controller: ['$scope', '$http', '$routeParams', '$location', '$cookies', function privateMessagesController($scope, $http, $routeParams, $location, $cookies) {
       var self = this;
       var user = $cookies.get("username");
-      var seconduser = $cookies.get("seconduser");
+      var seconduser = $cookies.get("seconduserfromnavbar");
+
+/////////////////////////////////////////////////////////////////////////////////    
       
-      console.log("getting dms of the follwoing 2 users:");
-      console.log(user);
-      console.log(seconduser);
       var getdms = function(){
         console.log("in getdms");
         $http({
@@ -26,6 +25,7 @@ angular.
       
       getdms();
       
+/////////////////////////////////////////////////////////////////////////////////
       
       $scope.senddm = function(message){
         var m = user + ": " + message;
@@ -38,6 +38,5 @@ angular.
             getdms();
         });
       };
-      
     }]
 });
