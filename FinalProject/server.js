@@ -6,6 +6,7 @@ var db = mongojs('users', ['users']);//tells us what database we will be using
 
 var bodyParser = require('body-parser');
 var mkdirp = require('mkdirp');
+var async = require('async');
 
 app.use(express.static(__dirname + "/public")); //static because we're telling the server to look for static files (html, css, js, image files)
 // app.use(express.static(__dirname + "/images"));
@@ -274,6 +275,10 @@ app.post('/follow', function(req, res){
   
 });
 
+
+
+
+
 app.get('/globalnewsfeed/', function(req, res){
     console.log('received get request for global news feed');
     console.log('my req.query: ', req.query);
@@ -297,14 +302,55 @@ app.get('/globalnewsfeed/', function(req, res){
         })
     }else if(req.query.get == "following"){
         console.log('getfollowing');
+        var following;
+        var found = false;
+        var feed = [];
+
         db.users.find({username: req.query.username}, function(err,docs){
             if(err){
                 console.log(err);
+            } else if(docs){
+                
+                following = docs[0].following;
+                
+                found = true;
+                var feed = [];
+                
+                
+                async.each(docs[0].following, function(item, callback){
+                    
+                    
+                    db.users.find({username: item}, function (err, doc){
+                        if(err){
+                            console.log(err);
+                            return callback(err);
+                        }
+                        var temp = {};
+                        temp.username = doc[0].username;
+                        temp.pics = doc[0].pics;
+                        feed.push(temp);
+                        callback(null);
+                    });     
+                    
+                }, function(asyncErr){
+                    if(asyncErr){
+                        console.log("async error message: ", asyncErr);
+                        res.json({success: "false", message:"Something went wrong try again"});
+                    }else{
+                        console.log('async finished: ', feed);
+                        res.json(feed);
+                    }
+                })
+            } else{
+                res.json({success: "false", message:"Something went wrong user not found"});
             }
-            console.log('get following', docs);
-            var following = docs[0].following;
-            console.log('following: ', following);
-        })
+
+            
+        });
+
+
+        
+
     } else if(req.query.get ="individual"){
         console.log('get individual');
         db.users.find({username : req.query.who}, function(err,docs){
@@ -350,7 +396,34 @@ app.get('/globalnewsfeed/', function(req, res){
 });
 
 
+app.post('/submitComment', function(req, res){
+    console.log(req.body);
+    db.users.find({username: req.body.who}, function(err, docs){
+        if(err){
+            console.log(err);
+        } else if(docs){
 
+            // async.parallel([
+            //     function(callback) {
+            //         setTimeout(function() {
+            //             callback(null, 'one');
+            //         }, 200);
+            //     }
+            // ],
+            // // optional callback
+            // function(err, results) {
+            //     // the results array will equal ['one','two'] even though
+            //     // the second function had a shorter timeout.
+            // });
+
+
+
+
+        } else{
+            res.json({success: "false", message:"Something went wrong user not found"});
+        }
+    })
+});
 
 function getInfo(user) {
       //this is where u should query the database for teh info you need

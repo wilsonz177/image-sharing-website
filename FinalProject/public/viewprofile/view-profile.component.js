@@ -26,6 +26,7 @@ angular.
       //"individual" for loading viewing all the posts made by a user
       self.key.stuff = "individual";
       self.key.who = self.viewUsername;
+      console.log('my key:', self.key);
       console.log('end of viewprofile component');
       
       self.follow = function(){

@@ -14,13 +14,13 @@ Email: {{$ctrl.viewUser.email}}
 <div class ="col-md-6">
 	<strong>Followers: </strong>
 	<ul>
-		<li ng-repeat="follower in $ctrl.viewUser.followers"></li>
+		<li ng-repeat="follower in $ctrl.viewUser.followers">{{follower}}</li>
 	</ul>
 </div>
 <div class="col-md-6"></div>
 	<strong> Following: </strong>
 	<ul>
-		<li ng-repeat="follow in $ctrl.viewUser.following"></li>
+		<li ng-repeat="follow in $ctrl.viewUser.following">{{follow}}</li>
 	</ul>
 </div>
 

@@ -24,8 +24,20 @@ angular.
          when('/viewuser/:username', {
             template: '<view-profile></view-profile>'
          }).
+         when('/home', {
+          template: '<news-feed key="$ctrl.key"></news-feed>',
+          controller: ['$scope', function homeCtrl($scope){
+            this.key = {}
+            this.key.stuff = "folllowing";
+          }]
+         }).
         otherwise('/login');
     }
   ]);
 
-
+// angular.
+//   module('instaBam').
+//   controller('appCtrl', function($scope){
+//     $scope.key = {}
+//     $scope.key.stuff = "folllowing";
+//   })
