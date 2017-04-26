@@ -16,7 +16,7 @@
             <li ng-repeat="request in $ctrl.requests">{{request}}<button type="button" ng-click="acceptRequest(request)">Accept</button></li>
         </ul>
       </li>
-      <li><a href="#!/login">Logout</a></li>
+      <li><a ng-click="$ctrl.logout()">Logout<a></li>
     </ul>
   </div>
 </nav>

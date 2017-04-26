@@ -46,6 +46,11 @@ angular.
             getUsersAndFollowRequests();
         });
       };
+
+      self.logout = function(){
+        $cookies.remove("username");
+        $location.path('/login');
+      }
       
     }]
 });
