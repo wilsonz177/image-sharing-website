@@ -620,15 +620,6 @@ app.post('/like', function (req, res){
               }
             }
 
-
-            
-
-            
-            console.log("async has yet to start so found will be true: ", found);
-
-            
-
-
             async.parallel([
                 function(callback) {
                     db.users.update({username : req.body.who}, 
@@ -658,7 +649,57 @@ app.post('/like', function (req, res){
             });
 
 
+        } else{
+            res.json({success: "false", message:"Something went wrong user not found"});
+        }
+    })
+});
 
+app.post('/deletePost', function (req, res){
+    console.log(req.body);
+    db.users.findOne({username: req.body.who}, function(err, doc){
+        if(err){
+            console.log(err);
+        } else if(doc){
+            var count = 0;
+            var found = false;
+            var picsArray = doc.pics;
+            for(var i=0; i<doc.pics.length; i++){
+              if(req.body.timestamp == doc.pics[i].timestamp){
+                found = true;
+                count = i;
+                picsArray.splice(i, 1);
+                break;
+              }
+            }
+
+            async.parallel([
+                function(callback) {
+                    db.users.update({username : req.body.who}, 
+                      {$set : {
+                             pics : picsArray
+                          }
+                      }, function(err, doc){
+                        if(err){
+                          console.log(err);
+                          return callback(err);
+                        }
+                        callback(null);
+                      }
+                    )
+                    
+                }
+            ],
+            // optional callback
+            function(err, results) {
+                if(err){
+                        console.log("parallel error message: ", err);
+                        res.json({success: "false", message:"Something went wrong try again"});
+                }else{
+                        
+                        res.json({success:"true", message:"successfully deleted image"});
+                }
+            });
 
 
         } else{

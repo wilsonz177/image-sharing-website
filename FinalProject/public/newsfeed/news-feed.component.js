@@ -171,8 +171,27 @@ angular.
         });
       }
 
+      self.deletePost = function (number){
+        if(self.username == self.globalfeed[number].name){
+          var temp = new Object();
+          temp.who = self.globalfeed[number].name;
+          temp.timestamp = self.globalfeed[number].pic.timestamp;
+          var jsonString = JSON.stringify(temp);
 
-      
+          $http.post('/deletePost', jsonString, {
+                transformRequest: angular.identity,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(response){
+              if(response.data.success == "true"){
+                loadFeed();
+              }else{
+                if(response.data.success == "false"){
+                  console.log("failed to delete");
+                }
+              }
+          });
+        }
+      }
         
       
       
