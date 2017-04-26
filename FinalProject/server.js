@@ -7,6 +7,7 @@ var db = mongojs('users', ['users']);//tells us what database we will be using
 var bodyParser = require('body-parser');
 var mkdirp = require('mkdirp');
 var async = require('async');
+var fs = require("fs");
 
 app.use(express.static(__dirname + "/public")); //static because we're telling the server to look for static files (html, css, js, image files)
 // app.use(express.static(__dirname + "/images"));
@@ -664,10 +665,12 @@ app.post('/deletePost', function (req, res){
             var count = 0;
             var found = false;
             var picsArray = doc.pics;
+            var deletePath = "public/";
             for(var i=0; i<doc.pics.length; i++){
               if(req.body.timestamp == doc.pics[i].timestamp){
                 found = true;
                 count = i;
+                deletePath = deletePath.concat(picsArray[i].filepath);
                 picsArray.splice(i, 1);
                 break;
               }
@@ -696,7 +699,7 @@ app.post('/deletePost', function (req, res){
                         console.log("parallel error message: ", err);
                         res.json({success: "false", message:"Something went wrong try again"});
                 }else{
-                        
+                        fs.unlink(deletePath);
                         res.json({success:"true", message:"successfully deleted image"});
                 }
             });
