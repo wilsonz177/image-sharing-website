@@ -1,7 +1,7 @@
 <div class="container">
 <h3>{{$ctrl.viewUser.username}}</h3>
-
-<button ng-click="$ctrl.follow()">Follow</button><button ng-click="$ctrl.unfollow()">Unfollow</button>
+<span id="requestsent">Follow Request Sent</span>
+<button id="follow" ng-click="$ctrl.follow()">Follow</button><button id="unfollow" ng-click="$ctrl.unfollow()">Unfollow</button>
 <p></p>
 <strong>{{$ctrl.viewUser.firstname}} {{$ctrl.viewUser.lastname}}</strong>
 <br>
@@ -14,13 +14,13 @@ Email: {{$ctrl.viewUser.email}}
 <div class ="col-md-6">
 	<strong>Followers: </strong>
 	<ul>
-		<li ng-repeat="follower in $ctrl.viewUser.followers"></li>
+		<li ng-repeat="follower in $ctrl.viewUser.followers">{{follower}}</li>
 	</ul>
 </div>
 <div class="col-md-6"></div>
 	<strong> Following: </strong>
 	<ul>
-		<li ng-repeat="follow in $ctrl.viewUser.following"></li>
+		<li ng-repeat="follow in $ctrl.viewUser.following">{{follow}}</li>
 	</ul>
 </div>
 
