@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 angular.
   module('viewProfile').
@@ -7,20 +7,52 @@ angular.
     controller: ['$scope', '$http', '$routeParams', '$rootScope', '$cookies', '$location', function viewProfileController($scope, $http, $routeParams, $rootScope, $cookies, $location) {
     	var self = this;
     	self.viewUsername = $routeParams.username;
-      self.viewUser;
       self.username = $cookies.get('username');
-      console.log('got here first');
+
+      
+      var loadProfile = function(){
+        console.log("in LOADPROFILE");
+      document.getElementById('requestsent').style.visibility = 'hidden';
+      document.getElementById('unfollow').style.visibility = 'hidden';
+      document.getElementById('follow').style.visibility = 'visible';
     	$http.get('/getProfile/' + self.viewUsername, {
         transformRequest: angular.identity,
         // headers: { 'Content-Type': undefined },
         // params: {viewUser: self.viewUser}
       }).then(function(data){
+        console.log("in the response of LOADPROFILE");
         console.log('got data: ', data.data);
         self.viewUser = data.data;
+        var followers = data.data.followers;
+        var requests = data.data.followRequests;
+        console.log("these are the follow requests in LOADPROFIEL ", requests);
+        console.log("this is self.viewusername ", self.viewUsername);
+        if (self.username == self.viewUser.username){
+          document.getElementById('unfollow').style.visibility = 'hidden';
+          document.getElementById('follow').style.visibility = 'hidden';
+        }
+        
+         for(var i = 0; i<followers.length; i++){
+              if (followers[i] == self.username){
+                document.getElementById('follow').style.visibility = 'hidden';
+                document.getElementById('unfollow').style.visibility = 'visible';
+              }
+            }
+            
+            for(var j = 0; j<requests.length; j++){
+              if (requests[j] == self.username){
+                console.log("I should be showing the request sent bar");
+                document.getElementById('requestsent').style.visibility = 'visible';
+                document.getElementById('follow').style.visibility = 'hidden';
+              }
+            }
+        
       });
+      };
+      
+      loadProfile();
 
-
-      self.key = {} 
+      self.key = {};
 
       //"following" for loading the current user's newsfeed
       //"individual" for loading viewing all the posts made by a user
@@ -30,21 +62,31 @@ angular.
       console.log('end of viewprofile component');
       
       self.follow = function(){
-        console.log("in the follow function");
-        var u = $cookies.get('username');
+        var username = $cookies.get('username');
         $http({
         method: 'POST',
         url:'/follow',
-        data: {"loggedinuser": u, "userbeingfollowed": self.viewUser.username}
+        data: {"loggedinuser": username, "userbeingfollowedorunfollowed": self.viewUser.username, "action": "follow"}
       })
       .then(function(response) {
-            var path = '/viewuser/' + response.data.username;
-            $location.path(path);
+        console.log("i just followed a user");
+            loadProfile();
         });
       };
       
       self.unfollow = function(){
-        
+        var username = $cookies.get('username');
+        console.log("im in the unfllow function");
+        $http({
+        method: 'POST',
+        url:'/follow',
+        data: {"loggedinuser": username, "userbeingfollowedorunfollowed": self.viewUser.username, "action": "unfollow"}
+      })
+      .then(function(response) {
+        console.log("im in the response unfllow function");
+          loadProfile();
+        });
       };
+      
     }]
    });

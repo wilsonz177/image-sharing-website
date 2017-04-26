@@ -1,1 +1,22 @@
-<h1>{{$ctrl.searchbar}}</h1>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Finstagram</a>
+    </div>
+    <ul class="nav navbar-nav">
+
+      <li><a href="#">Home</a></li>
+      <li><a href="#!/newsfeed">Explore</a></li>
+      <li><a href="#!/addpost">Add Post</a></li>
+      <li><input name="allusers" id="allusers" type="text" placeholder="search for someone here..." ng-model="$ctrl.selected" typeahead-on-select="onSelect($item, $model, $label)" uib-typeahead="user for user in $ctrl.allusers | filter:$viewValue | limitTo:8" class="form-control"></li>
+      <li>
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Follow Requests
+        <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+            <li ng-repeat="request in $ctrl.requests">{{request}}<button type="button" ng-click="acceptRequest(request)">Accept</button></li>
+        </ul>
+      </li>
+      <li><a href="#!/login">Logout</a></li>
+    </ul>
+  </div>
+</nav>

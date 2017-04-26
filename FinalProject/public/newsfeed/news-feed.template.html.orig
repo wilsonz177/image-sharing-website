@@ -1,0 +1,64 @@
+
+        <div class="container">
+            <div ng-show="message">
+            <div ng-class = "alert">
+                {{$ctrl.message}}
+            </div>
+            </div>
+
+<<<<<<< HEAD
+      <li><a href="#!/home">Home</a></li>
+      <li><a href="#!/newsfeed">Explore</a></li>
+      <li><a href="#!/addpost">Add Post</a></li>
+      <li><input name="allusers" id="allusers" type="text" placeholder="search for someone here..." ng-model="$ctrl.selected" typeahead-on-select="onSelect($item, $model, $label)" uib-typeahead="user for user in $ctrl.allusers | filter:$viewValue | limitTo:8" class="form-control"></li>
+      <li><a href="#!/login">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+            
+=======
+>>>>>>> a23c031377cf32dfb2afe7da437a86907ff785bb
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>images</th>
+                        <th>username</th>
+                        <th>caption</th>
+                        <th>likes</th>
+                        <th>date</th>
+                        <th>comments</th>
+                        <th>options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="post in $ctrl.globalfeed | filter:search">
+                        <td><img ng-src="../{{post.pic.filepath}}"  alt="No Image!" height="100" width="100"/></td>
+                        <td>{{post.name}}</td>
+                        <td>{{post.pic.caption}}</td>
+                        <td>{{post.pic.likes}}</td>
+                        <td>posted {{post.pic.timestamp | date:"MM/dd/yyyy 'at' h:mma"}}</td>
+                        <td>
+                            <ul ng-repeat="comment in post.pic.comments">
+                                <li>{{comment.username}}: "{{comment.content}}"</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <button type="button" ng-click="$ctrl.showCommentInput(post.num)"; class="btn btn-primary">Add comment</button>
+                            <div  class="form-group" ng-show="post.addComment">
+                            <label>type your comment:<input type="text" class="form-control" ng-model="post.commentToSubmit" ></label>
+                            <button type="button" class="btn btn-info"  ng-click="$ctrl.submitComment(post.num)">Submit your Comment</button>
+                            </div>
+                            <button type="button" class="btn btn-success">Edit post</button>
+                            <button type="button" class="btn btn-warning">Delete Post</button>
+                        </td>
+                        <!-- <td>{{post.pic.timestamp | date:'yyyy-MM-dd HH:mm:ss Z'}}</td> -->
+
+                        <!-- <td><td ng-repeat="comment in post.comments">{{comment.user}}: {{comment.message}}</td></td>≈
+                        <td><button class="btn btn-primary" name="addcomment" ng-click="addcomment()">Add Comment</button></td> -->
+                    </tr>
+                </tbody>
+            </table>
+    
+        </div>
+        <h3 ng-model="foo">{{$ctrl.key.stuff}}</h3>
+

@@ -10,19 +10,19 @@ angular.
           template: '<log-in></log-in>'
         }).
         when('/addpost', {
-          template: '<add-post></add-post>'
+          template: '<search-bar></search-bar><add-post></add-post>'
         }).
          when('/newsfeed', {
-           template: '<news-feed></news-feed>'
+           template: '<search-bar></search-bar><news-feed></news-feed>'
         }).
         //  when('/details/:id', {
         //    template: '<detailed-view></detailed-view>'
         // }).
          when('/addcomment', {
-            template: '<add-comment></add-comment>'
+            template: '<search-bar></search-bar><add-comment></add-comment>'
          }).
          when('/viewuser/:username', {
-            template: '<view-profile></view-profile>'
+            template: '<search-bar></search-bar><view-profile></view-profile>'
          }).
          when('/home', {
           template: '<news-feed key="$ctrl.key"></news-feed>',

@@ -1,7 +1,7 @@
 <div class="container">
 <h3>{{$ctrl.viewUser.username}}</h3>
-
-<button ng-click="$ctrl.follow()">Follow</button><button ng-click="$ctrl.unfollow()">Unfollow</button>
+<span id="requestsent">Follow Request Sent</span>
+<button id="follow" ng-click="$ctrl.follow()">Follow</button><button id="unfollow" ng-click="$ctrl.unfollow()">Unfollow</button>
 <p></p>
 <strong>{{$ctrl.viewUser.firstname}} {{$ctrl.viewUser.lastname}}</strong>
 <br>

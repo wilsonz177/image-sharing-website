@@ -166,6 +166,36 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
 
 /////////////////////////////////////////////////////////////////////////////////
 
+app.post('/usersandfollowrequests', function (req, res) {
+            var allusers = [];
+            var requests = [];
+            db.users.find(function(err,docs){
+            if(err){
+                console.log(err);
+            }
+            
+            for(var i = 0; i<docs.length; i++){
+                allusers.push(docs[i].username);
+            }
+            
+            console.log("the user loggin in is *****", req.body.user);
+            db.users.find({username: req.body.user}, function(err,docs){
+            if(err){
+                console.log(err);
+            }
+            requests = docs[0].followRequests;
+             console.log("the requests array is: ", requests);
+             res.json({"allusers": allusers, "requests": requests});
+        });
+            
+            
+            
+        });
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////
+
 app.post('/adduser', function (req, res) { //listens for post request from controller
 
     var newEntry = req.body;
@@ -177,7 +207,9 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
     newEntry.followers = [];
     newEntry.following = [];
     newEntry.pics = [];
-    newEntry.newfeed = [];
+    newEntry.newsfeed = [];
+    newEntry.followRequests = [];
+    newEntry.sentRequests = [];
     username = req.body.username;
     //var newEntry = {};
     //var username = req.body.username;
@@ -248,36 +280,119 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
     
 
 // });
+
+/////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////
+
 app.post('/follow', function(req, res){
   var userloggedin = req.body.loggedinuser;
-  console.log(userloggedin);
+  var seconduser = req.body.userbeingfollowedorunfollowed;
+  var action = req.body.action;
+  var priv = false;
+  var requests = [];
   
-  var userbeingfollowed = req.body.userbeingfollowed;
-  console.log(userbeingfollowed);
   
+  if (action == "follow"){
+  
+          db.users.find({username: seconduser}, function(err,docs){
+            if(err){
+                console.log(err);
+            }
+            priv = docs[0].private;
+            console.log("private or nawh?", priv);
+       
+          
+          if (priv === false) {
+            
+             console.log("the profile is public?????");
               db.users.update(
                    {username: userloggedin},
                    {$push : {
-                             following : userbeingfollowed
+                             following : seconduser
                           }
                     }
             );
               
               db.users.update(
-                   {username: userbeingfollowed},
+                   {username: seconduser},
                    {$push : {
                              followers : userloggedin
                           }
                     }
             );
-              
-            res.json({"username": userbeingfollowed});
-  
+            res.json({"username": seconduser});
+          } else {
+            db.users.update(
+                   {username: seconduser},
+                   {$push : {
+                             followRequests : userloggedin
+                          }
+                    }
+                    
+            );
+            db.users.update(
+                   {username: userloggedin},
+                   {$push : {
+                             sentRequests : seconduser
+                          }
+                    }
+                    
+            );
+            
+            setTimeout(function(){ res.json(docs); }, 1000);
+          }
+        });
+    } else if (action == "unfollow") { //unfollow
+      
+      db.users.update(
+          { username: userloggedin },
+          { $pull: { following: seconduser } }
+      );
+      
+      db.users.update(
+          { username: seconduser },
+          { $pull: { followers: userloggedin } }
+      );
+      res.json({"username": seconduser});
+    } else {
+        db.users.update( //delete request
+          { username: userloggedin },
+          { $pull: { followRequests: seconduser } }
+      );
+        db.users.update( //delete request
+          { username: seconduser },
+          { $pull: { sentRequests: userloggedin } }
+      );
+        
+            db.users.find({username: userloggedin}, function(err,docs){ //get updated list of requests
+            if(err){
+                console.log(err);
+            }
+            requests = docs[0].followRequests;
+            });
+        
+              db.users.update( //update the users followers
+                   {username: userloggedin},
+                   {$push : {
+                             followers : seconduser
+                          }
+                    }
+            );
+      
+                   db.users.update( //update the requests following
+                   {username: seconduser},
+                   {$push : {
+                             following : userloggedin
+                          }
+                    }
+            );
+                   
+            res.json({"requests": requests});
+    }
 });
 
-
-
-
+/////////////////////////////////////////////////////////////////////////////
 
 app.get('/globalnewsfeed/', function(req, res){
     console.log('received get request for global news feed');
@@ -299,7 +414,7 @@ app.get('/globalnewsfeed/', function(req, res){
             }
             // console.log(globalfeed);
             res.json(globalfeed);
-        })
+        });
     }else if(req.query.get == "following"){
         console.log('getfollowing');
         var following;
