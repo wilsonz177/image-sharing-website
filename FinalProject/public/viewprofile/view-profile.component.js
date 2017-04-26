@@ -61,6 +61,22 @@ angular.
       console.log('my key:', self.key);
       console.log('end of viewprofile component');
       
+      self.send = function(message){
+        var username = $cookies.get('username');
+        var m = username + ": " + message;
+        
+        console.log("sending this DM from client: ", m);
+        
+        $http({
+        method: 'POST',
+        url:'/dm',
+        data: {"firstuser": username, "seconduser": self.viewUsername, "message": m}
+      })
+      .then(function(response) {
+
+        });
+      };
+      
       self.follow = function(){
         var username = $cookies.get('username');
         $http({

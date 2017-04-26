@@ -31,6 +31,12 @@ angular.
             this.key.stuff = "folllowing";
           }]
          }).
+          when('/privatemessages/:username', {
+            template: '<search-bar></search-bar><private-messages></private-messages>'
+         }).
+          when('/accountsettings', {
+            template: '<search-bar></search-bar><account-settings></account-settings>'
+         }).
         otherwise('/login');
     }
   ]);

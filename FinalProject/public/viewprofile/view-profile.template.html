@@ -2,6 +2,9 @@
 <h3>{{$ctrl.viewUser.username}}</h3>
 <span id="requestsent">Follow Request Sent</span>
 <button id="follow" ng-click="$ctrl.follow()">Follow</button><button id="unfollow" ng-click="$ctrl.unfollow()">Unfollow</button>
+<div id="directmessage">
+<input type="text" ng-model="dm"> <button ng-click="$ctrl.send(dm)">Send</button>
+</div>
 <p></p>
 <strong>{{$ctrl.viewUser.firstname}} {{$ctrl.viewUser.lastname}}</strong>
 <br>

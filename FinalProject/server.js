@@ -167,8 +167,10 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
 /////////////////////////////////////////////////////////////////////////////////
 
 app.post('/usersandfollowrequests', function (req, res) {
+  
             var allusers = [];
             var requests = [];
+            var dmpeople = [];
             db.users.find(function(err,docs){
             if(err){
                 console.log(err);
@@ -183,15 +185,22 @@ app.post('/usersandfollowrequests', function (req, res) {
             if(err){
                 console.log(err);
             }
+            for (var key in docs[0].dms) {
+                  dmpeople.push(key);
+                  console.log("this is dmpeople from server: ", dmpeople);
+                }
+             });
             requests = docs[0].followRequests;
              console.log("the requests array is: ", requests);
-             res.json({"allusers": allusers, "requests": requests});
+             setTimeout(function(){  
+                res.json({"allusers": allusers, "requests": requests, "dmpeople": dmpeople});
+             }, 1000);
         });
             
             
             
         });
-});
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -211,6 +220,7 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
     newEntry.followRequests = [];
     newEntry.sentRequests = [];
     username = req.body.username;
+    newEntry.dms = {};
     //var newEntry = {};
     //var username = req.body.username;
     //newEntry[username] = {"info": req.body, "pics":{}, "newsfeed":{}};
@@ -236,6 +246,76 @@ app.post('/adduser', function (req, res) { //listens for post request from contr
 });
 
 /////////////////////////////////////////////////////////////////////////////////
+ app.post('/dm', function (req, res) {
+ console.log("bout to start dm stuff from server side");
+ console.log("this is who is sending the dm: ", req.body.firstuser);
+  console.log("this is who is receiving the dm: ", req.body.seconduser);
+  console.log("this is the message: ", req.body.message);
+
+ var message = req.body.message;
+ var messages = [];
+ var people = [];
+             db.users.find({username: req.body.firstuser},function(err,docs){ 
+                
+                for (var key in docs[0].dms) {
+                   if (key == req.body.seconduser) {
+                    console.log("this isnt the first message");
+                    
+                    for(var i=0; i<docs[0].dms[key].length; i++){
+                      messages.push(docs[0].dms[key][i]);
+                      console.log("THE MESSAGES: ", messages);
+                    }
+                   }
+                }
+ 
+             });
+             
+setTimeout(function(){      
+             messages.push(message);
+ 
+ console.log("these are all the messages", messages);
+var placeholderone = {};
+placeholderone['dms.' + req.body.seconduser] = messages;
+
+var placeholdertwo = {};
+placeholdertwo['dms.' + req.body.firstuser] = messages;
+ 
+            db.users.update({username: req.body.firstuser},
+      
+                   {"$set" :  placeholderone}
+            );
+            
+            db.users.update({username: req.body.seconduser},
+      
+                   {"$set" :  placeholdertwo}
+            );
+            
+            res.json(messages);
+        }, 1000);  
+ });
+ 
+ 
+app.post('/getdms', function (req, res) {
+ 
+ var messages = [];
+             db.users.find({username: req.body.firstuser},function(err,docs){ 
+                
+                for (var key in docs[0].dms) {
+                   if (key == req.body.seconduser) {
+                    
+                    for(var i=0; i<docs[0].dms[key].length; i++){
+                      messages.push(docs[0].dms[key][i]);
+                    }        
+                   }
+                }
+ 
+             });
+             setTimeout(function(){ 
+                  res.json({"messages": messages});
+             }, 1000);  
+            
+ });
+
 
 // app.delete('/contactlist/:id', function (req, res) {
 //     var id = req.params.id;
@@ -537,7 +617,77 @@ app.post('/submitComment', function(req, res){
         } else{
             res.json({success: "false", message:"Something went wrong user not found"});
         }
-    })
+    });
+});
+
+
+app.post('/changeinfo', function(req, res){
+  
+  console.log("server side user is: ", req.body.user)
+  console.log("server side change info. here is the tpye of change: ", req.body.typeofrequest);
+  console.log("server side change info. here is the value: ", req.body.value);
+  
+  if (req.body.typeofrequest == "changepassword"){
+    console.log("updating password");
+    db.users.update( //update the users followers
+                   {username: req.body.user},
+                   {$set : {
+                             password : req.body.value
+                          }
+                    }
+            );
+  }
+
+    if (req.body.typeofrequest == "changefirstname"){
+    db.users.update( //update the users followers
+                   {username: req.body.user},
+                   {$set : {
+                             firstname : req.body.value
+                          }
+                    }
+            );
+  }
+  
+    if (req.body.typeofrequest == "changelastname"){
+    db.users.update( //update the users followers
+                   {username: req.body.user},
+                   {$set : {
+                             lastname : req.body.value
+                          }
+                    }
+            );
+  }
+  
+    if (req.body.typeofrequest == "changebio"){
+    db.users.update( //update the users followers
+                   {username: req.body.user},
+                   {$set : {
+                             bio : req.body.value
+                          }
+                    }
+            );
+  }
+  
+    if (req.body.typeofrequest == "changeemail"){
+    db.users.update( //update the users followers
+                   {username: req.body.user},
+                   {$set : {
+                             email : req.body.value
+                          }
+                    }
+            );
+  }
+  
+    if (req.body.typeofrequest == "changeprivate"){
+    db.users.update( //update the users followers
+                   {username: req.body.user},
+                   {$set : {
+                             private : req.body.value
+                          }
+                    }
+            );
+  }
+  
 });
 
 function getInfo(user) {

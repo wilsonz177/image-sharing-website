@@ -1,0 +1,6 @@
+<span>
+    <ul>
+        <li ng-repeat="message in $ctrl.convo">{{message}}</li>
+    </ul>
+    <input id="senddm" type="text" ng-model="directmessage"> <button ng-click="senddm(directmessage)">Send</button>
+</span>

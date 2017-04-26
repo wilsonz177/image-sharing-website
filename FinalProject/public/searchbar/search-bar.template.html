@@ -16,6 +16,14 @@
             <li ng-repeat="request in $ctrl.requests">{{request}}<button type="button" ng-click="acceptRequest(request)">Accept</button></li>
         </ul>
       </li>
+      <li>
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Private Messages
+        <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+            <li ng-repeat="person in $ctrl.people">{{person}}<button type="button" ng-click="openPrivateMessages(person)">More</button></li>
+        </ul>
+      </li>
+      <li><a href="#!/accountsettings">Account Settings</a></li>
       <li><a href="#!/login">Logout</a></li>
     </ul>
   </div>

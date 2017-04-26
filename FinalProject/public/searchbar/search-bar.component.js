@@ -19,12 +19,20 @@ angular.
       .then(function(response) {
           self.allusers = response.data.allusers;
           self.requests = response.data.requests;
+          self.people = response.data.dmpeople;
+          console.log("these are all the dmpeople", response.data.dmpeople);
            console.log("these are all the users", response.data.users);
           console.log("these are all the requests", response.data.requests);
         });
       };
       
       getUsersAndFollowRequests(); //gets an array of allusers that the search bar can look through
+
+      $scope.openPrivateMessages = function(person){
+          $cookies.put("seconduser", person);
+          var path = '/privatemessages/' + person;
+          $location.path(path);
+      };
 
       $scope.onSelect = function ($item, $model, $label) {
           $scope.$item = $item;
