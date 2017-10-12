@@ -20,12 +20,17 @@ angular.
             //transformRequest: angular.identity,
             headers: {'Content-Type': 'application/json'}
       }).then(function(response) {
+          if(response.data.success == "false"){
+            console.log("failed to find user");
+          }else if (response.data.success == "true"){
+            console.log("success login");
             $rootScope.user = response.data.username;
             $rootScope._id = response.data._id;
             $cookies.put("username", response.data.username);
             $cookies.put("id", response.data._id);
             var path = '/home';
             $location.path(path);
+          }
         });
       };
     

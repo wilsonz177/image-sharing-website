@@ -117,31 +117,25 @@ app.post('/checkuser', function (req,res) { //get requests asks mongoDB for data
     var username = req.body.username;
     var pass = req.body.password;
     var notauser = true;
-    
-    db.users.find(function(err, docs){
-        for(var i = 0; i<docs.length; i++){
-          console.log("here is the doc username: ", docs[i].username);
-          console.log("here is the real username: ", username);
-          if (username == docs[i].username){
-            console.log("match");
-            notauser = false;
-          }
+
+
+    db.users.findOne({username: req.body.username}, function(err, docs){
+      if(err){
+        console.log(err);
+        res.json({success: "false"});
+      } else if(docs){
+        console.log('found person: ',  docs);
+        if(docs.password == pass){
+          console.log("FOUND THE PASSWORD");
+          res.json({"username" : docs.username, "_id" : docs._id, success : "true"});
+        }
+      } else{
+        console.log(err);
+        res.json({success: "false"});
       }
     });
-    
-    setTimeout(function(){  
-          
-    if (notauser === false){
-    db.users.find({username: req.body.username}, function(err, docs){
-        if(docs[0].password == pass){
-            res.json({"username" : req.body.username, "_id" : req.body._id});
-        }else{
-            console.log('incorrect password/username');
-        }
-    });
-    }
-    
-  }, 500);
+
+  
 });
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -204,7 +198,7 @@ app.post('/adduser', function (req, res) {
     var mirhadPath = "/Users/mirhadosmanovic/spring2017-cp-441746-435490/FinalProject/public/images/";
 
     //create folder to store images
-    var path = mirhadPath + req.body.username;
+    var path = wilsonPath + req.body.username;
     mkdirp(path, function (err) {
         if (err){
             console.error(err);
