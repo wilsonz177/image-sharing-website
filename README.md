@@ -18,4 +18,4 @@
 #Can send direct messages two different ways (from profile and from private message view)
 
 
-![Alt text](/~/FinstagramScreenShot.png?raw=true "Optional Title")
+![Alt text](/FinstagramScreenShot.png?raw=true "Optional Title")
