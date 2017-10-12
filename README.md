@@ -18,3 +18,4 @@
 #Can send direct messages two different ways (from profile and from private message view)
 
 
+![Alt text](/Screen Shot 2017-10-11 at 9.05.35 PM.png?raw=true "Optional Title")
