@@ -3,6 +3,7 @@
     "async": "^2.3.0",
     "body-parser": "*",
     "express": "*",
+    "mongojs": "^2.4.1",
     "mongoose": "*",
     "multer": "^1.3.0",
     "path": "*"
