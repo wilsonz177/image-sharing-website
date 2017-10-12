@@ -28,7 +28,7 @@ angular.
             $rootScope._id = response.data._id;
             $cookies.put("username", response.data.username);
             $cookies.put("id", response.data._id);
-            var path = '/home';
+            var path = '/newsfeed';
             $location.path(path);
           }
         });
