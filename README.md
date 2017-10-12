@@ -1,6 +1,7 @@
 # Finstagram a mobile image sharing website #
 
-#Users can create an account and login/logout
+# Users can do the following: #
+*Users can create an account and login/logout
 #Users can search user profiles and follow them,(adding their posts to the user's home page newsfeed)
 #Users have their own newsfeed, of posts by people they follow
 #Can set up a profile as private, so that you must request to follow and their posts are not viewable by nonfollowers 
