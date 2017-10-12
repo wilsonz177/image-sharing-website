@@ -11,9 +11,9 @@
 #Able to access a global news feed, where everyone's public posts are shown 
 #All newsfeed/posts/comments are ordered by date
 
-#direct messaging (10pts)
-#ability to update user profile under account settings(5 pts)
-#ability to filter through newsfeed (5pts)
+#direct messaging 
+#ability to update user profile under account settings
+#ability to filter through newsfeed 
 #Can like posts
 #Can send direct messages two different ways (from profile and from private message view)
 
