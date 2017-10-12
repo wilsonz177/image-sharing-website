@@ -1,5 +1,8 @@
 # Finstagram a mobile image sharing website #
 
+### Link to website
+http://ec2-35-165-10-61.us-west-2.compute.amazonaws.com:3000/#!/login
+
 ### This website has the following features:
 * Users can create an account and login/logout
 * Users can search user profiles and follow them,(adding their posts to the user's home page newsfeed)
