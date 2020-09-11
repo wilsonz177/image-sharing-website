@@ -176,6 +176,9 @@ app.post('/usersandfollowrequests', function (req, res) {
 app.post('/adduser', function (req, res) { 
 
     var newEntry = req.body;
+    if(req.body.private == 'heyo') {
+        console.log('dad')
+    }
     if(req.body.private === "private"){
          newEntry.private = true;
     }else{
